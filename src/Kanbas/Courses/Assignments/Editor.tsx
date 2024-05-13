@@ -34,6 +34,7 @@ export default function AssignmentEditor() {
                             <option selected value="ASSIGNMENTS">ASSIGNMENTS</option>
                             <option value="EXAMS">EXAMS</option>
                             <option value="QUIZZES">QUIZZES</option>
+                            <option value="PROJECT">PROJECT</option>
                         </select>
                     </td>
                 </tr>
