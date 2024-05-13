@@ -275,7 +275,7 @@ export default function Lab1() {
             <a href="https://www.lipsum.com">click here</a>
             to get dummy text<br/>
             Here is &nbsp;
-            <a href="https://github.com/JohnsonChen18">My github</a><br/>
+            <a href="https://github.com/JohnsonChen18/kanbas-react-web-app.git">My github</a><br/>
         </div>
     );
 }
