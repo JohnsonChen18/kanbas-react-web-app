@@ -7,7 +7,7 @@ export default function Labs() {
     return (
         <div>
             <h1>Name: Miaozhi Chen (Section 02)</h1><br/>
-            <a href="https://github.com/JohnsonChen18/kanbas-react-web-app.git" target="_blank">My github</a>
+            {/*<a href="https://github.com/JohnsonChen18/kanbas-react-web-app.git" target="_blank">My github</a>*/}
             <br/> <br/>
             <h1>Labs</h1>
             <TOC/>
