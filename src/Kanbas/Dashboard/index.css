@@ -1,0 +1,7 @@
+
+.wd-dashboard-course-link, .wd-dashboard-course-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}

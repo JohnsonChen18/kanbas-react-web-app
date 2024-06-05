@@ -1,0 +1,47 @@
+.responsive-font {
+    font-size: 1.6rem;
+}
+@media (max-width: 1200px) {
+    .responsive-font {
+        font-size: 1.5rem;
+    }
+}
+@media (max-width: 992px) {
+    .responsive-font {
+        font-size: 1.4rem;
+    }
+}
+@media (max-width: 768px) {
+    .responsive-font {
+        font-size: 1.25rem;
+    }
+}
+@media (max-width: 576px) {
+    .responsive-font {
+        font-size: 1rem;
+    }
+}
+
+.table td:first-child {
+    color: red;
+}
+
+.table td:first-child, .table th:first-child {
+    text-align: left;
+}
+
+.table td:not(:first-child), .table th:not(:first-child) {
+    text-align: center;
+}
+
+.table td, .table th {
+    border: 1px solid black;
+    vertical-align: middle;
+}
+
+input {
+    background-color: transparent;
+    border-color: transparent;
+    width: 100%;
+    text-align: center;
+}

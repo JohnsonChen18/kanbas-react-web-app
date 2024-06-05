@@ -1,0 +1,14 @@
+
+#wd-kanbas-navigation {
+    width: 110px;
+    height: 100vh; /* height of bar == height of window */
+    overflow-y: auto; /* in case height of window is too short */
+    display: flex;
+}
+
+
+#wd-kanbas-navigation .list-group-item {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0.5rem;
+}

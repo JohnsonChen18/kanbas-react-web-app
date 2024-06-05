@@ -741,8 +741,6 @@ export default function Lab2() {
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 }

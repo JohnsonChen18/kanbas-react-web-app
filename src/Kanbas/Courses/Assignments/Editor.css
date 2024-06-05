@@ -1,0 +1,17 @@
+.customized-boarder{
+    border: 1px solid gray;
+    border-radius: 0.3rem;
+    background-color: white;
+}
+
+#wd-description{
+    height: 200px;
+}
+
+#wd-assignments-editor-submission-type-options label {
+    margin-left: 0.25rem;
+}
+
+.custom-width {
+    width: 73.5%;
+}
