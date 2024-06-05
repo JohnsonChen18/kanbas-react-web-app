@@ -5,7 +5,7 @@ export default function AssignmentEditor() {
     return (
         <div id="wd-assignments-editor" className="container col-12 col-md-10 col-xl-8 col-xxl-6">
             <label htmlFor="wd-name">Assignment Name</label><br/>
-            <input id="wd-name" className="form-control customized-boarder" value="A1 - ENV + HTML"/>
+            <input id="wd-name" className="form-control customized-boarder text-start" value="A1 - ENV + HTML"/>
             <br/>
             <textarea id="wd-description" className="form-control customized-boarder">
             The assignment is available online
@@ -91,25 +91,25 @@ export default function AssignmentEditor() {
                         <label className="form-label col-4 text-start fw-bold mt-2 mb-0" htmlFor="wd-assign-to"
                                data-role="tagsinput">Assign
                             to</label>
-                        <input className="customized-boarder form-control" id="wd-assign-to" value={"Everyone"}/>
+                        <input className="customized-boarder form-control text-start" id="wd-assign-to" value={"Everyone"}/>
                         {/*due*/}
                         <label className="form-label col-4 text-start fw-bold mt-2 mb-0"
                                htmlFor="wd-due-date">Due</label>
-                        <input className="customized-boarder form-control" type="date" id="wd-due-date"
+                        <input className="customized-boarder form-control text-start" type="date" id="wd-due-date"
                                value="2024-05-13"/>
                         {/*available from until*/}
                         <div className="row mt-2 mb-2">
                             <div className="col-6">
                                 <label className="form-label text-start mb-0 pt-1 fw-bold" htmlFor="wd-available-from">
                                     Available from</label><br/>
-                                <input className="form-control customized-boarder form-control" type="date"
+                                <input className="form-control customized-boarder text-start form-control" type="date"
                                        id="wd-available-from"
                                        value="2024-05-06"/>
                             </div>
                             <div className="col-6">
                                 <label className="form-label text-start mb-0 pt-1 fw-bold" htmlFor="wd-available-until">
                                     Until</label><br/>
-                                <input className="form-control customized-boarder form-control " type="date"
+                                <input className="form-control customized-boarder text-start form-control " type="date"
                                        id="wd-available-until"
                                        value="2024-05-20"/>
                             </div>
