@@ -8,7 +8,7 @@ export default function AssignmentsControl() {
                   <span className="input-group-text bg-white border-end-0 border-2 border-black">
                     <FaSearch/>
                   </span>
-                <input type="text" className="form-control-sm border-start-0 border-black" placeholder="Search..." style={{width: '125px'}}/>
+                <input type="text" className="form-control-sm border-start-0 border-black text-start" placeholder="Search..." style={{width: '125px'}}/>
             </div>
 
             <div className="d-flex flex-row ml-auto">

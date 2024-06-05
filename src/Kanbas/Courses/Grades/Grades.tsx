@@ -17,7 +17,7 @@ export default function Grades() {
                           <span className="input-group-text bg-white border-end-0 border-2 border-black">
                             <FaSearch className="fa-sm"/>
                           </span>
-                        <input type="text" id="wd-student-names" className="form-control-lg border-start-0 border-black"
+                        <input type="text" id="wd-student-names" className="form-control-lg border-start-0 border-black text-start"
                                placeholder="Search..." style={{width: '70%'}}/>
                     </div>
                 </div>
@@ -30,7 +30,7 @@ export default function Grades() {
                             <FaSearch className="fa-sm"/>
                           </span>
                         <input type="text" id="wd-assignment-names"
-                               className="form-control-lg border-start-0 border-black"
+                               className="form-control-lg border-start-0 border-black text-start"
                                placeholder="Search..." style={{width: '70%'}}/>
                     </div>
                 </div>
