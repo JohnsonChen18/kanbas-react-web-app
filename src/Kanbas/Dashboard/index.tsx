@@ -10,7 +10,7 @@ export default function Dashboard() {
             <div id="wd-dashboard-courses" className="row">
                 <div className="row row-cols-1 row-cols-md-5 gx-4">
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/reactjs.jpg"/>
                             <div className="card-body">
@@ -36,7 +36,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs5700cover.jpg"/>
                             <div className="card-body">
@@ -53,7 +53,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs5800cover.jpg"/>
                             <div className="card-body">
@@ -70,7 +70,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs6220cover.jpg"/>
                             <div className="card-body">
@@ -87,7 +87,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs6120cover.jpg"/>
                             <div className="card-body">
@@ -106,7 +106,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs5200cover.jpg"/>
                             <div className="card-body">
@@ -123,7 +123,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs6200cover.jpg"/>
                             <div className="card-body">
@@ -140,7 +140,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="wd-dashboard-course col" style={{width: "270px", marginBottom: "35px"}}>
+                    <div className="wd-dashboard-course col" style={{width: "300px"}}>
                         <div className="card">
                             <img src="/images/cs5600cover.jpg"/>
                             <div className="card-body">
