@@ -2,8 +2,19 @@ import {FaSearch} from "react-icons/fa";
 import GradesTopButton from "./GradesTopButton";
 import {LuFilter} from "react-icons/lu";
 import "./Grades.css";
+import * as db from "../../Database";
+import {useParams} from "react-router";
 
 export default function Grades() {
+    const{cid} = useParams();
+    const{aid} = useParams();
+    const assignments = db.assignments.filter((assignment)=> assignment.course === cid);
+    const enrolledIDs = db.enrollments
+        .filter((enrollment)=> enrollment.course === cid)
+        .map((enrollment)=> enrollment.user);
+    const students = db.users.filter((user)=>user.role === "STUDENT");
+    const grades = db.grades;
+
     return (
         <div id="wd-grades" className="container">
             <GradesTopButton/><br/><br/><br/>
@@ -50,34 +61,30 @@ export default function Grades() {
                     <thead>
                     <tr>
                         <th>Student Name</th>
-                        <th>A1 SETUP<br/>Out of 100</th>
-                        <th>A2 HTML<br/>Out of 100</th>
-                        <th>A3 CSS<br/>Out of 100</th>
-                        <th>A4 BOOTSTRAP<br/>Out of 100</th>
+                        {assignments.map((assignment)=> (
+                            <th>{assignment.title}<br/>{`Out of ${assignment.points}`}</th>
+                        ))}
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Jane Adams</td>
-                        <td><input type="text" value="96.67%"/></td>
-                        <td><input type="text" value="96.67%"/></td>
-                        <td><input type="text" value="92.67%"/></td>
-                        <td><input type="text" value="55.67%"/></td>
-                    </tr>
-                    <tr>
-                        <td>Christina Allen</td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                    </tr>
-                    <tr>
-                        <td>Samreen Ansari</td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                        <td><input type="text" value="100%"/></td>
-                    </tr>
+                    {enrolledIDs.map((enrolledID)=> {
+                        let student = students.find((student)=>student._id===enrolledID);
+                        let studentID = student&&student._id? student._id : '';
+                        if (student === null) {
+                            return null;
+                        }
+                        return (
+                            <tr>
+                                <td>{student ? `${student.firstName} ${student.lastName}` : 'NOT FOUND'}</td>
+                                {assignments.map((assignment) =>{
+                                    let gradeObj = grades.find((grade)=>grade.assignment===assignment._id && grade.student === studentID);
+                                    return (
+                                        <td><input type="text" value={`${gradeObj? gradeObj.grade : 'N/A'}`}/></td>
+                                    )
+                                })}
+                            </tr>
+                        )
+                    })}
                     </tbody>
                 </table>
             </div>

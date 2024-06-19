@@ -22,24 +22,24 @@
     }
 }
 
-.table td:first-child {
+#wd-grades-table .table td:first-child {
     color: red;
 }
 
-.table td:first-child, .table th:first-child {
+#wd-grades-table .table td:first-child, #wd-grades-table .table th:first-child {
     text-align: left;
 }
 
-.table td:not(:first-child), .table th:not(:first-child) {
+#wd-grades-table .table td:not(:first-child), #wd-grades-table .table th:not(:first-child) {
     text-align: center;
 }
 
-.table td, .table th {
+#wd-grades-table .table td, #wd-grades-table .table th {
     border: 1px solid black;
     vertical-align: middle;
 }
 
-input {
+#wd-grades-table input {
     background-color: transparent;
     border-color: transparent;
     width: 100%;

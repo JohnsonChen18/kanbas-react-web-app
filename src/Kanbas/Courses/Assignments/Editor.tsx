@@ -1,15 +1,21 @@
 import "./Editor.css";
 import EditorBottomButton from "./EditorBottomButton";
+import {useParams} from "react-router";
+import * as db from "../../Database";
+import assignments from "../../Database/assignments.json";
 
 export default function AssignmentEditor() {
+    const { cid} = useParams();
+    const { aid} = useParams();
+    const assignment = assignments.find((a)=> a._id===aid);
     return (
         <div id="wd-assignments-editor" className="container col-12 col-md-10 col-xl-8 col-xxl-6">
             <label htmlFor="wd-name">Assignment Name</label><br/>
-            <input id="wd-name" className="form-control customized-boarder text-start" value="A1 - ENV + HTML"/>
+            <input id="wd-name" className="form-control customized-boarder text-start"
+                   value={assignment && assignment.title ? `${assignment.title}` : ""}/>
             <br/>
             <textarea id="wd-description" className="form-control customized-boarder">
-            The assignment is available online
-            Submit a link to the landing page of
+            {assignment && assignment.description ? `${assignment.description}` : ""}
             </textarea>
             <br/>
 
@@ -19,7 +25,7 @@ export default function AssignmentEditor() {
                 <div className="row mb-2">
                     <label className="form-label col-3 text-end pt-2" htmlFor="wd-points">Points</label>
                     <input className="col-9 form-control text-start customized-boarder custom-width"
-                           id="wd-points" value="100"/>
+                           id="wd-points" value={assignment && assignment.points ? `${assignment.points}` : ""}/>
                 </div>
                 {/*assignment group*/}
                 <div className="row mb-2">
@@ -95,23 +101,23 @@ export default function AssignmentEditor() {
                         {/*due*/}
                         <label className="form-label col-4 text-start fw-bold mt-2 mb-0"
                                htmlFor="wd-due-date">Due</label>
-                        <input className="customized-boarder form-control text-start" type="date" id="wd-due-date"
-                               value="2024-05-13"/>
+                        <input className="customized-boarder form-control text-start" type="datetime-local" id="wd-due-date"
+                               value={assignment && assignment.due ? `${assignment.due}` : ""}/>
                         {/*available from until*/}
                         <div className="row mt-2 mb-2">
                             <div className="col-6">
                                 <label className="form-label text-start mb-0 pt-1 fw-bold" htmlFor="wd-available-from">
                                     Available from</label><br/>
-                                <input className="form-control customized-boarder text-start form-control" type="date"
+                                <input className="form-control customized-boarder text-start form-control" type="datetime-local"
                                        id="wd-available-from"
-                                       value="2024-05-06"/>
+                                       value={assignment && assignment.availableFrom ? `${assignment.availableFrom}` : ""}/>
                             </div>
                             <div className="col-6">
                                 <label className="form-label text-start mb-0 pt-1 fw-bold" htmlFor="wd-available-until">
                                     Until</label><br/>
-                                <input className="form-control customized-boarder text-start form-control " type="date"
+                                <input className="form-control customized-boarder text-start form-control " type="datetime-local"
                                        id="wd-available-until"
-                                       value="2024-05-20"/>
+                                       value={assignment && assignment.availableUntil ? `${assignment.availableUntil}` : ""}/>
                             </div>
                         </div>
                     </div>
