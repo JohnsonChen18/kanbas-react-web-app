@@ -70,7 +70,7 @@ export default function Grades() {
                     {enrolledIDs.map((enrolledID)=> {
                         let student = students.find((student)=>student._id===enrolledID);
                         let studentID = student&&student._id? student._id : '';
-                        if (student === null) {
+                        if (student === undefined) {
                             return null;
                         }
                         return (
