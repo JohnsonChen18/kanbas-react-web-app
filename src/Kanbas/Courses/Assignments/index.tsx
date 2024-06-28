@@ -6,10 +6,13 @@ import {IoMdArrowDropdown} from "react-icons/io";
 import AssignmentTitleControlButton from "./AssignmentTitleControlButton";
 import AssignmentsControl from "./AssignmentsControl";
 import {useParams} from "react-router";
-import * as db from "../../Database";
+import {deleteAssignment } from "./reducer";
+import {useSelector} from "react-redux";
+
 export default function Assignments() {
     const { cid} = useParams();
-    const assignments = db.assignments;
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+
     return (
         <div id="wd-assignments">
 
@@ -25,8 +28,8 @@ export default function Assignments() {
                         <AssignmentTitleControlButton/>
                     </div>
                     <ul className="wd-assignment-list list-group rounded-0">
-                        {assignments.filter((assignment)=>assignment.course===cid)
-                            .map((assignment)=> (
+                        {assignments.filter((assignment:any)=>assignment.course===cid)
+                            .map((assignment:any)=> (
                                 <li className="wd-assignment-list-item d-flex align-items-center list-group-item p-3 ps-1">
                                     <div className=" me-2 fs-3">
                                         <BsGripVertical/>
@@ -56,14 +59,12 @@ export default function Assignments() {
                                         {assignment.points}pts
                                         </span>
                                     </div>
-                                    <AssignmentControlButtons/>
+                                    <AssignmentControlButtons assignmentId={assignment._id} assignmentName={assignment.title} deleteAssignment={deleteAssignment}/>
                                 </li>
                             ))}
                     </ul>
                 </li>
             </ul>
-
-
         </div>
     );
 }

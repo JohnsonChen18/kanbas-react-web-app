@@ -5,12 +5,12 @@ export default function Counter() {
     return (
         <div id="wd-counter-use-state">
             <h2>Counter: {count}</h2>
-            <button
+            <button className="btn btn-danger ms-2"
                 onClick={() => { setCount(count + 1)}}
                 id="wd-counter-up-click">
                 Up
             </button>
-            <button
+            <button className="btn btn-success ms-2"
                 onClick={() => { setCount(count - 1)}}
                 id="wd-counter-down-click">
                 Down

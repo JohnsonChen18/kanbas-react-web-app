@@ -9,6 +9,7 @@ import DateStateVariable from "./DateStateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
 import ReduxExamples from "./ReduxExamples";
+import ObjectStateVariable from "./ObjectStateVariable";
 
 export default function Lab4(){
     function sayHello() {
@@ -25,6 +26,7 @@ export default function Lab4(){
             <BooleanStateVariables/>
             <StringStateVariables/>
             <DateStateVariable/>
+            <ObjectStateVariable/>
             <ArrayStateVariable/>
             <ParentStateComponent/>
             <ReduxExamples/>
