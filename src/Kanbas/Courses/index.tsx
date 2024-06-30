@@ -1,9 +1,8 @@
-import courses  from "../Database/courses.json";
 import CoursesNavigation from "./Navigation";
 import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
-import {Navigate, Route, Routes, useParams,useLocation} from "react-router";
+import {Route, Routes, useParams,useLocation} from "react-router";
 import AssignmentEditor from "./Assignments/Editor";
 import {FaAlignJustify} from "react-icons/fa";
 import Grades from "./Grades/Grades";
