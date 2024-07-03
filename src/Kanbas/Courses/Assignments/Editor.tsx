@@ -1,3 +1,5 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./Editor.css";
 import {useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -8,6 +10,7 @@ import * as client from "./client";
 export default function AssignmentEditor() {
     const {cid} = useParams();
     const {aid} = useParams();
+    const navigate = useNavigate();
     const isNew = aid === "new";
     const dispatch = useDispatch();
     const createAssignment = async (assignment: any) => {
@@ -20,7 +23,17 @@ export default function AssignmentEditor() {
         // dispatch(updateAssignment(newAssignment));
     };
 
-
+    const handleSaveClick = () => {
+        const assignmentData = { ...assignment, course: cid };
+        if (isNew) {
+            createAssignment(assignmentData);
+        } else {
+            saveAssignment(assignmentData);
+        }
+        setTimeout(() => {
+            navigate(`/Kanbas/Courses/${cid}/Assignments`);
+        }, 500);
+    };
 
 
 
@@ -157,13 +170,10 @@ export default function AssignmentEditor() {
             </div>
             <hr className="my-4 col-12 my-0"/>
             <div id="wd-editor-buttom" className="">
-                <a href={`#/Kanbas/Courses/${cid}/Assignments`}>
                     <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger mb-2 mb-md-0 float-end"
-                            onClick={isNew? ()=>createAssignment({...assignment, "course":cid}):
-                                ()=>saveAssignment({...assignment, "course":cid})}>
+                            onClick={handleSaveClick}>
                         Save
                     </button>
-                </a>
                 <a href={`#/Kanbas/Courses/${cid}/Assignments`}>
                     <button id="wd-add-group-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">
                         Cancel
