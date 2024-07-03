@@ -12,6 +12,7 @@ export default function AssignmentEditor() {
     const {aid} = useParams();
     const navigate = useNavigate();
     const isNew = aid === "new";
+    const [isDisabled, setIsDisabled] = useState(false);
     const dispatch = useDispatch();
     const createAssignment = async (assignment: any) => {
         const newAssignment = await client.createAssignment(assignment);
@@ -23,6 +24,9 @@ export default function AssignmentEditor() {
     };
 
     const handleSaveClick = () => {
+        if (isDisabled) return;
+
+        setIsDisabled(true);
         const assignmentData = { ...assignment, course: cid };
         if (isNew) {
             createAssignment(assignmentData);
@@ -170,7 +174,7 @@ export default function AssignmentEditor() {
             <hr className="my-4 col-12 my-0"/>
             <div id="wd-editor-buttom" className="">
                     <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger mb-2 mb-md-0 float-end"
-                            onClick={handleSaveClick}>
+                            onClick={handleSaveClick} disabled={isDisabled}>
                         Save
                     </button>
                 <a href={`#/Kanbas/Courses/${cid}/Assignments`}>
