@@ -35,6 +35,12 @@ export default function TOC() {
                 </a>
             </li>
             <li className="nav-item">
+                <a id="wd-a5" href="#/Labs/Lab6"
+                   className={`nav-link ${pathname.includes("Lab6") ? "active" : ""}`}>
+                    Lab 6
+                </a>
+            </li>
+            <li className="nav-item">
                 <a id="wd-k" href="#/Kanbas" className="nav-link">
                     Kanbas
                 </a>

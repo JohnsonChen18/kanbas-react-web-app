@@ -3,12 +3,23 @@ import {useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import {addAssignment, updateAssignment} from "./reducer";
+import * as client from "./client";
 
 export default function AssignmentEditor() {
     const {cid} = useParams();
     const {aid} = useParams();
     const isNew = aid === "new";
     const dispatch = useDispatch();
+    const createAssignment = async (assignment: any) => {
+        const newAssignment = await client.createAssignment(assignment);
+        dispatch(addAssignment(newAssignment));
+    };
+    const saveAssignment = async (assignment: any) => {
+        const newAssignment = await client.updateAssignment(assignment);
+        dispatch(updateAssignment(newAssignment));
+    };
+
+
 
 
 
@@ -147,7 +158,8 @@ export default function AssignmentEditor() {
             <div id="wd-editor-buttom" className="">
                 <a href={`#/Kanbas/Courses/${cid}/Assignments`}>
                     <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger mb-2 mb-md-0 float-end"
-                            onClick={isNew? ()=>dispatch(addAssignment({...assignment, "course":cid})):()=>dispatch(updateAssignment({...assignment, "course":cid}))}>
+                            onClick={isNew? ()=>createAssignment({...assignment, "course":cid}):
+                                ()=>saveAssignment({...assignment, "course":cid})}>
                         Save
                     </button>
                 </a>

@@ -6,12 +6,28 @@ import {IoMdArrowDropdown} from "react-icons/io";
 import AssignmentTitleControlButton from "./AssignmentTitleControlButton";
 import AssignmentsControl from "./AssignmentsControl";
 import {useParams} from "react-router";
-import {deleteAssignment } from "./reducer";
-import {useSelector} from "react-redux";
+import {deleteAssignment, setAssignments} from "./reducer";
+import {useDispatch, useSelector} from "react-redux";
+import * as client from "./client";
+import {useEffect} from "react";
 
 export default function Assignments() {
-    const { cid} = useParams();
-    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+    const {cid} = useParams();
+    const dispatch = useDispatch();
+    const {assignments} = useSelector((state: any) => state.assignmentReducer);
+    const removeAssignment = async (assignmentId: string) => {
+        await client.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+    };
+
+    const fetchAssignments = async () => {
+        const assignments = await client.findAssignmentsForCourse(cid as string);
+        dispatch(setAssignments(assignments));
+    }
+    useEffect(() => {
+        fetchAssignments();
+    }, []);
+
 
     return (
         <div id="wd-assignments">
@@ -28,15 +44,16 @@ export default function Assignments() {
                         <AssignmentTitleControlButton/>
                     </div>
                     <ul className="wd-assignment-list list-group rounded-0">
-                        {assignments.filter((assignment:any)=>assignment.course===cid)
-                            .map((assignment:any)=> (
+                        {assignments.filter((assignment: any) => assignment.course === cid)
+                            .map((assignment: any) => (
                                 <li className="wd-assignment-list-item d-flex align-items-center list-group-item p-3 ps-1">
                                     <div className=" me-2 fs-3">
                                         <BsGripVertical/>
                                         <MdOutlineAssignment className="text-success"/>
                                     </div>
                                     <div className="flex-grow-1">
-                                        <a className="wd-assignment-link" href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                        <a className="wd-assignment-link"
+                                           href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
                                             {/*{`${assignment._id} - ${assignment.title}`}*/}
                                             {assignment.title}
                                         </a>
@@ -47,19 +64,21 @@ export default function Assignments() {
                                         &nbsp;|&nbsp;
                                         <span className="wd-assignment-list-item-start-time">
                                         <span className="fw-bolder">Not available until </span>
-                                        {assignment.availableFrom}
+                                            {assignment.availableFrom}
                                         </span>
                                         &nbsp;|&nbsp;
                                         <span className="wd-assignment-list-item-end-time">
                                         <span className="fw-bolder">Due </span>
-                                        {assignment.due}
+                                            {assignment.due}
                                         </span>
                                         &nbsp;|&nbsp;
                                         <span className="wd-assignment-list-item-points">
                                         {assignment.points}pts
                                         </span>
                                     </div>
-                                    <AssignmentControlButtons assignmentId={assignment._id} assignmentName={assignment.title} deleteAssignment={deleteAssignment}/>
+                                    <AssignmentControlButtons assignmentId={assignment._id}
+                                                              assignmentName={assignment.title}
+                                                              deleteAssignment={removeAssignment}/>
                                 </li>
                             ))}
                     </ul>
