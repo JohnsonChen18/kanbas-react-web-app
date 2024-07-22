@@ -13,8 +13,9 @@ import ProtectedRoute from "./ProtectedRoute";
 export default function Kanbas() {
     const [courses, setCourses] = useState<any[]>([]);
     const [course, setCourse] = useState<any>({
-        _id: "1234", name: "New Course", number: "New Number", imgName: "reactjs.jpg",
+        _id: "1234", name: "New Course", number: "Default Number", imgName: "reactjs.jpg",
         startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+        credits: 0,department:"DEFAULT_DEPARTMENT",
     });
     const addNewCourse = async () => {
         const newCourse = await client.createCourse(course);

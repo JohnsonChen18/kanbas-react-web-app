@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, } from "react-router-dom";
 import {useSelector} from "react-redux";
 export default function AccountNavigation() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -8,7 +8,7 @@ export default function AccountNavigation() {
         <div id="wd-account-navigation" className="list-group fs-5 rounded-0">
             {links.map((link) => (
                 <Link to={`/Kanbas/Account/${link.replace(/\s+/g, '')}`} className={`wd-link border border-0 list-group-item
-           ${ pathname.includes(link) ? "active text-black bg-white" : "text-danger" }`}> {link} </Link>
+           ${ pathname.includes(link.replace(/\s+/g, '')) ? "active text-black bg-white" : "text-danger" }`}> {link} </Link>
             ))}
         </div>
     );
