@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import {setCurrentUser} from "./reducer";
 
 export default function Signup() {
-    const [user, setUser] = useState<any>({});
+    const [user, setUser] = useState<any>({role:"FACULTY"});
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -27,8 +27,7 @@ export default function Signup() {
             <input value={user.password} onChange={(e) => setUser({...user, password: e.target.value})} type="password"
                    className="wd-password form-control mb-2" placeholder="password"/>
             Role: &nbsp;
-            <select className="wd-role" defaultValue="FACULTY"
-                    onChange={(e) => setUser({...user, role: e.target.value})}>
+            <select className="wd-role" defaultValue={user.role} onChange={(e) => setUser({...user, role: e.target.value})}>
                 <option value="FACULTY">Faculty</option>
                 <option value="STUDENT">Student</option>
             </select><br/>

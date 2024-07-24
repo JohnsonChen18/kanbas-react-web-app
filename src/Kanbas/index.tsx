@@ -5,7 +5,7 @@ import Courses from "./Courses";
 import "./styles.css";
 import {useEffect, useState} from "react";
 import store from "./store";
-import {Provider} from "react-redux";
+import {Provider, useSelector} from "react-redux";
 import * as client from "./Courses/client";
 import Account from "./Account";
 import ProtectedRoute from "./ProtectedRoute";
