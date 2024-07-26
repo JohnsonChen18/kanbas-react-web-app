@@ -1,6 +1,6 @@
 import {FaPlus} from "react-icons/fa6";
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {setCurrentUser} from "../Account/reducer";
 import * as client from "./client";
 export default function CourseRegistrar({allCourses}: {
@@ -27,7 +27,18 @@ export default function CourseRegistrar({allCourses}: {
         const status = await client.updateEnrolledCourses(updatedUser);
     }
 
+    useEffect(() => {
+        const handleModalShow = () => {
+            setEnrolledCourseIdArr(currentUser.enrolledCourses || []);
+        };
 
+        const modalElement = document.getElementById('wd-enroll-course-dialog');
+        modalElement?.addEventListener('show.bs.modal', handleModalShow);
+
+        return () => {
+            modalElement?.removeEventListener('show.bs.modal', handleModalShow);
+        };
+    }, [currentUser]);
     return(
         <div className="CourseRegistrar">
             <button
