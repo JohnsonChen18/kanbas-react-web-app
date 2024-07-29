@@ -11,7 +11,7 @@ export default function StudentDashboard(
     const courseIdArray = student.enrolledCourses;
     const currentCourse = courses.filter((course)=> courseIdArray.includes(course._id));
     return (
-        <div id="wd-dashboard-courses" className="row">
+        <div id="wd-dashboard-courses-student" className="row">
             <h2 id="wd-dashboard-published">Published Courses ({currentCourse.length})</h2>
             <hr/>
             <div className="row row-cols-1 row-cols-md-5 gx-4">

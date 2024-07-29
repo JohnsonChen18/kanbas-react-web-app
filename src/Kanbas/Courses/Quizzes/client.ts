@@ -10,3 +10,13 @@ export const findQuizzesByCourse = async (courseId: string) => {
         .get(`${QUIZZES_API}/course/${courseId}`);
     return response.data;
 };
+export const updateQuiz = async (quiz: any) => {
+    const response = await axios.
+    put(`${QUIZZES_API}`, quiz);
+    return response.data;
+}
+export const deleteQuiz = async (quizId: string) => {
+    const response = await axios
+        .delete(`${QUIZZES_API}/${quizId}`);
+    return response.data;
+};

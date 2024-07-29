@@ -10,7 +10,7 @@ export default function FacultyDashboard(
     }){
     const coursesOfCurrFaculty = courses.filter((course) => (course.creator == creator));
     return (
-        <div id="wd-dashboard-courses" className="row">
+        <div id="wd-dashboard-courses-faculty" className="row">
             <h2 id="wd-dashboard-published">Published Courses ({coursesOfCurrFaculty.length})</h2>
             <hr/>
             <div className="row row-cols-1 row-cols-md-5 gx-4">

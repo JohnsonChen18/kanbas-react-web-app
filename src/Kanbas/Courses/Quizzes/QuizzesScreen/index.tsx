@@ -4,6 +4,7 @@ import {useEffect} from "react";
 import {setQuizzes} from "../reducer";
 import * as client from "../client";
 import {useParams} from "react-router";
+import StudentQuizzesScreen from "./StudentQuizzesScreen";
 
 
 export default function QuizzesScreen() {
@@ -11,8 +12,8 @@ export default function QuizzesScreen() {
     const dispatch = useDispatch();
     const {cid} = useParams();
     const fetchQuizzes = async () => {
-        const assignments = await client.findQuizzesByCourse(cid as string);
-        dispatch(setQuizzes(assignments));
+        const quizzes = await client.findQuizzesByCourse(cid as string);
+        dispatch(setQuizzes(quizzes));
     }
     useEffect(() => {
         fetchQuizzes();
@@ -21,7 +22,7 @@ export default function QuizzesScreen() {
     return(
         <div className="wd-quizzes-screen">
             {currentUser.role === "FACULTY" && <FacultyQuizzesScreen/>}
-
+            {currentUser.role === "STUDENT" && <StudentQuizzesScreen/>}
         </div>
     );
 }

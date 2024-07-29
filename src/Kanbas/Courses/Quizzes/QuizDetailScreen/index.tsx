@@ -1,0 +1,167 @@
+import {useParams} from "react-router";
+import {useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {FaPlus} from "react-icons/fa6";
+import {FaCheckCircle} from "react-icons/fa";
+import {AiOutlineStop} from "react-icons/ai";
+
+export default function QuizDetailScreen() {
+    const {quizId, cid} = useParams();
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const {quizzes} = useSelector((state: any) => state.quizReducer);
+    const [currQuiz, setCurrQuiz] = useState(quizzes.find((quiz: any) => quiz._id === quizId));
+
+    function formatQuizType(input: String) {
+        const words = input.toLowerCase().split('_');
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+        }
+        return words.join(' ');
+    }
+
+    function formatDate(isoString: string): string {
+        const date = new Date(isoString);
+
+        if (isNaN(date.getTime())) {
+            throw new Error("Invalid date string");
+        }
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        const year = date.getFullYear();
+        const month = months[date.getMonth()];
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        // Format hours to 12-hour format
+        const hours12 = hours % 12 || 12;
+        const ampm = hours >= 12 ? 'pm' : 'am';
+
+        // Pad minutes with leading zero if needed
+        const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+        return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
+    }
+
+
+    return (
+        <div className="wd-quiz-detail">
+            <div className="wd-quiz-detail-buttons d-grid">
+                {currentUser.role === "FACULTY" &&
+                    <div className="wd-quiz-detail-faculty-button-row row">
+                        <div className="wd-quiz-detail-faculty-button col-6">
+                            <a id="wd-edit-quiz-btn" className="float-end btn btn-lg btn-secondary mb-2 mb-md-0"
+                               href={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${currQuiz._id}/Details`}>
+                                Edit
+                            </a>
+                            <a id="wd-preview-quiz-btn" className="float-end btn btn-lg btn-secondary mb-2 me-2 mb-md-0"
+                               href={`#/Kanbas/Courses/${cid}/Quizzes/new`}>
+                                Preview
+                            </a>
+                        </div>
+                        <div className="wd-quiz-editor-heading-publish text-start col-6 d-flex align-items-center">
+                            {currQuiz.published ?
+                                <div className="fw-bold fs-4 d-flex align-items-center"><FaCheckCircle className="text-success"/>Published
+                                </div> :
+                                <div className="fw-bold fs-4 d-flex align-items-center"><AiOutlineStop className="text-danger"/>Unpublished
+                                </div>}
+                        </div>
+                    </div>}
+                {currentUser.role === "STUDENT" &&
+                    <div className="wd-quiz-detail-student-button-row row">
+                        <div className="wd-quiz-detail-student-button col-6">
+                            <a id="wd-take-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
+                               href={`#/Kanbas/Courses/${cid}/Quizzes/new`}>
+                                Take Quiz
+                            </a>
+                        </div>
+                    </div>}
+            </div>
+            <div className="wd-quiz-detail-content d-grid">
+                <hr/>
+                <div className="wd-quiz-detail-titile row">
+                    <div className="wd-quiz-detail-title col-6 fw-bolder fs-2 text-end">{currQuiz.name}</div>
+                </div>
+                <br/>
+                <div className="wd-quiz-detail-type row">
+                    <div className="col-4 text-end fw-bold">Quiz Type</div>
+                    <div className="col-6 text-start">{formatQuizType(currQuiz.quizType)}</div>
+                </div>
+                <div className="wd-quiz-detail-points row">
+                    <div className="col-4 text-end fw-bold">Points</div>
+                    <div className="col-6 text-start">{currQuiz.points}</div>
+                </div>
+                <div className="wd-quiz-detail-group row">
+                    <div className="col-4 text-end fw-bold">Assignment Group</div>
+                    <div className="col-6 text-start">{currQuiz.assignmentGroup}</div>
+                </div>
+                <div className="wd-quiz-detail-shuffle row">
+                    <div className="col-4 text-end fw-bold">Shuffle Answers</div>
+                    <div className="col-6 text-start">{currQuiz.shuffleAnswers ? "Yes" : "No"}</div>
+                </div>
+                <div className="wd-quiz-detail-time-limit row">
+                    <div className="col-4 text-end fw-bold">Time Limit</div>
+                    <div className="col-6 text-start">{currQuiz.timeLimit} Minutes</div>
+                </div>
+                <div className="wd-quiz-detail-multiple-attempts row">
+                    <div className="col-4 text-end fw-bold">Multiple Attempts</div>
+                    <div className="col-6 text-start">{currQuiz.multipleAttempts ? "Yes" : "No"}</div>
+                </div>
+                <div className="wd-quiz-detail-max-attempts row">
+                    <div className="col-4 text-end fw-bold">Max Attempts</div>
+                    <div className="col-6 text-start">{currQuiz.maxAttempts}</div>
+                </div>
+                <div className="wd-quiz-detail-show-answers row">
+                    <div className="col-4 text-end fw-bold">Show Correct Answers</div>
+                    <div className="col-6 text-start">{currQuiz.showCorrectAnswers ?
+                        <div className="wd-quiz-detail-when-show-answers">
+                            {currQuiz.whenToShowAnswers === "AFTER_ALL" && "After all questions"}
+                            {currQuiz.whenToShowAnswers === "AFTER_EACH" && "After each question"}
+                        </div> : "No"}
+                    </div>
+                </div>
+                <div className="wd-quiz-detail-access-code row">
+                    <div className="col-4 text-end fw-bold">Access Code</div>
+                    <div className="col-6 text-start">{currQuiz.accessCode == "" ? "N/A" : currQuiz.accessCode}</div>
+                </div>
+                <div className="wd-quiz-detail-one-qeustion row">
+                    <div className="col-4 text-end fw-bold">One Question at a Time</div>
+                    <div className="col-6 text-start">{currQuiz.oneQuestionLimit ? "Yes" : "No"}</div>
+                </div>
+                <div className="wd-quiz-detail-webcam row">
+                    <div className="col-4 text-end fw-bold">Webcam Required</div>
+                    <div className="col-6 text-start">{currQuiz.webCam ? "Yes" : "No"}</div>
+                </div>
+                <div className="wd-quiz-detail-lock-questions row">
+                    <div className="col-4 text-end fw-bold">Lock Questions After Answering</div>
+                    <div className="col-6 text-start">{currQuiz.lockQuestion ? "Yes" : "No"}</div>
+                </div>
+                <div className="wd-quiz-detail-description row">
+                    <div className="col-4 text-end fw-bold">Description</div>
+                    {/*<div className="col-6 text-start overflow-auto">{currQuiz.description}</div>*/}
+                    <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
+                              style={{height: '200px',border: '1px solid transparent' }} readOnly>
+                        {currQuiz.description}
+                    </textarea>
+                </div>
+            </div>
+            <br/> <br/> <br/>
+            <div className="wd-quiz-detail-time d-grid">
+                <div className="wd-quiz-detail-time-title-row row">
+                    <div className="wd-quiz-detail-due-date col-4 fw-bolder text-start">Due date</div>
+                    <div className="wd-quiz-detail-available-date col-4 fw-bolder text-start">Available date</div>
+                    <div className="wd-quiz-detail-until-date col-4 fw-bolder text-start">Until date</div>
+                </div>
+                <hr/>
+                <div className="wd-quiz-detail-time-row row">
+                    <div className="wd-quiz-detail-due-date col-4 text-start">{formatDate(currQuiz.dueDate)}</div>
+                    <div
+                        className="wd-quiz-detail-available-date col-4 text-start">{formatDate(currQuiz.availableDate)}</div>
+                    <div className="wd-quiz-detail-until-date col-4 text-start">{formatDate(currQuiz.untilDate)}</div>
+                </div>
+            </div>
+
+        </div>
+    );
+}

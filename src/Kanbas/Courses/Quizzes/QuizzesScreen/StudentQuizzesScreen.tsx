@@ -1,38 +1,15 @@
 import {FaPlus} from "react-icons/fa6";
-import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router";
-import {addQuiz, deleteQuiz, setQuizzes, updateQuiz} from "../reducer";
-import * as client from "../client";
 import {BsGripVertical, BsThreeDotsVertical} from "react-icons/bs";
-import {MdOutlineAssignment} from "react-icons/md";
 import {IoMdArrowDropdown} from "react-icons/io";
-import {AiOutlineStop} from "react-icons/ai";
+import {MdOutlineAssignment} from "react-icons/md";
 import {FaCheckCircle} from "react-icons/fa";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {AiOutlineStop} from "react-icons/ai";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router";
 
-export default function FacultyQuizzesScreen() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const {cid} = useParams();
+export default function StudentQuizzesScreen(){
     const {quizzes} = useSelector((state: any) => state.quizReducer);
-    const [showOptions, setShowOptions] = useState<string | null>(null);
-    const [currQuiz, setCurrQuiz] = useState({name: "DEFAULT_NAME", published: false});
-    const toggleOptions = (id: string) => {
-        setShowOptions(prevId => (prevId === id ? null : id));
-    };
-    const createQuiz = async (quiz: any) => {
-        const newQuiz = await client.createQuiz(quiz);
-        dispatch(addQuiz(newQuiz));
-        // console.log(quizzes);
-        // console.log(newQuiz);
-        return newQuiz;
-    };
-    const removeQuiz = async (quizId: string) => {
-        await client.deleteQuiz(quizId);
-        dispatch(deleteQuiz(quizId));
-    };
-
+    const {cid} = useParams();
     function formatDate(isoString: string): string {
         const date = new Date(isoString);
 
@@ -57,39 +34,8 @@ export default function FacultyQuizzesScreen() {
 
         return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
     }
-
-    const handleAddButtonClick = async () => {
-        const currentDate = new Date();
-        const quiz = {
-            course: cid,
-            name: "DEFAULT_QUIZ_NAME",
-            availableDate: new Date(currentDate.getTime() + 24 * 60 * 60 * 1000), // one day after
-            dueDate: new Date(currentDate.getTime() + 2 * 24 * 60 * 60 * 1000), // two day after
-            untilDate: new Date(currentDate.getTime() + 3 * 24 * 60 * 60 * 1000), // three day after
-        };
-        const newQuiz = await createQuiz(quiz);
-        navigate(`${newQuiz._id}`);
-    };
-
-    const flipPublish = (quiz: any) => {
-        const currState = quiz.published;
-        setCurrQuiz({...quiz, published: !currState});
-        setShowOptions(null);
-    };
-    useEffect(() => {
-        if (currQuiz) {
-            dispatch(updateQuiz(currQuiz));
-            client.updateQuiz(currQuiz);
-        }
-    }, [currQuiz]);
-
     return (
         <div className="wd-quiz-screen-faculty">
-            <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                    onClick={handleAddButtonClick}>
-                <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
-                Quiz
-            </button>
             <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
                     onClick={() => console.log(quizzes)}>
                 <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
@@ -141,30 +87,6 @@ export default function FacultyQuizzesScreen() {
                             <span className="wd-assignment-list-item-question-count ">
                                 {quiz.questionCount}<span className="fw-bolder"> Questions</span>
                             </span>
-                        </div>
-                        <div className="wd-quiz-icon-right me-2 fs-3">
-                            {quiz.published ?
-                                <button className="btn btn-lg text-success" onClick={() => flipPublish(quiz)}>
-                                    <FaCheckCircle/></button> :
-                                <button className="btn btn-lg text-danger" onClick={() => flipPublish(quiz)}>
-                                    <AiOutlineStop/></button>}
-                            <button className="btn btn-light" onClick={() => toggleOptions(quiz._id)}>
-                                <BsThreeDotsVertical/></button>
-                            {showOptions === quiz._id && (
-                                <div className="dropdown-menu show" style={{width: '50x'}}>
-                                    <button className="dropdown-item fw-bold" onClick={() => navigate(`${quiz._id}`)}>
-                                        Edit
-                                    </button>
-                                    <button className="dropdown-item fw-bold "
-                                            onClick={() => flipPublish(quiz)}>
-                                        {quiz.published ? <span>Unpublish</span> : <span>Publish</span>}
-                                    </button>
-                                    <button className="dropdown-item fw-bold text-danger"
-                                            onClick={() => removeQuiz(quiz._id)}>
-                                        Delete
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     </li>
                 ))}

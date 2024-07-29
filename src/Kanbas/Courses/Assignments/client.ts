@@ -4,7 +4,7 @@ const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`;
 export const findAssignmentsForCourse = async (courseId: string) => {
     const response = await axios
         .get(`${ASSIGNMENTS_API}/${courseId}`);
-    console.log(REMOTE_SERVER);
+    // console.log(REMOTE_SERVER);
     return response.data;
 };
 
