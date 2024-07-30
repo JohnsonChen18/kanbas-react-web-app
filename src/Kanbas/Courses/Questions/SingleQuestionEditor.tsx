@@ -1,7 +1,6 @@
 import {useParams} from "react-router";
 import React, {useEffect, useReducer, useState} from "react";
 import {useSelector} from "react-redux";
-
 export default function SingleQuestionEditor() {
     const {cid, quizId, questionNumber } = useParams();
     const {questions} = useSelector((state: any) => state.questionReducer);
@@ -15,6 +14,69 @@ export default function SingleQuestionEditor() {
             setCurrQuestion({ ...currQuestion, points: 0 });
         }
     };
+    const handleOptionChange = (e:any, optionNumber:number) => {
+        const updatedText = e.target.value;
+
+        setCurrQuestion((prevState:any) => {
+            const updatedOptions = prevState.options.map((option:any) =>
+                option.number === optionNumber ? { ...option, text: updatedText } : option
+            );
+
+            return { ...prevState, options: updatedOptions };
+        });
+    };
+    const handleOptionDeleteClick = (optionNumber:number) => {
+        setCurrQuestion((prevState:any) => {
+            const updatedOptions = prevState.options.map((option:any) =>
+                option.number === optionNumber ? { ...option, deleted: true} : option
+            );
+
+            return { ...prevState, options: updatedOptions };
+        });
+    }
+    const handleAddOptionClick = () => {
+        setCurrQuestion((prevState: any) => {
+            const newOption = {
+                text: "DEFAULT_OPTION_DESCRIPTION",
+                number: prevState.nextOptionNumber,
+                deleted: false,
+            };
+            const updatedOptions = [...prevState.options, newOption];
+            return {
+                ...prevState,
+                options: updatedOptions,
+                nextOptionNumber: prevState.nextOptionNumber + 1,
+            };
+        });
+    };
+    const handleAnswerChange = (e:any,targetIndex:number) =>{
+        const updatedText = e.target.value;
+        setCurrQuestion((prevState:any) => {
+            const updatedAnswers = prevState.correct_answers.map((answer:string, index:number) =>
+                index==targetIndex ? updatedText : answer
+            );
+
+            return { ...prevState, correct_answers: updatedAnswers };
+        });
+    }
+    const handleAnswerDeleteClick = (targetIndex:number) => {
+        setCurrQuestion((prevState:any) => {
+            const updatedAnswers = prevState.correct_answers.filter((answer:string, index:number) =>
+                index!=targetIndex);
+            return { ...prevState, correct_answers: updatedAnswers };
+        });
+    }
+    const handleAddAnswerClick = () => {
+        setCurrQuestion((prevState: any) => {
+            const newAnswer = "DEFAULT_ANSWER";
+            const updatedAnswers = [...prevState.correct_answers, newAnswer];
+            return {
+                ...prevState,
+                correct_answers: updatedAnswers,
+            };
+        });
+    };
+
     useEffect(() => {
         const question = questions.find((q:any)=>(q.number == questionNumber));
         setCurrQuestion(question);
@@ -32,6 +94,10 @@ export default function SingleQuestionEditor() {
                         Back to Questions
                     </button>
                 </a>
+                <button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
+                        onClick={() => console.log(currQuestion)}>
+                    Show question detail
+                </button>
             </div>
             <div className="wd-question-title-row row mb-4">
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
@@ -77,21 +143,98 @@ export default function SingleQuestionEditor() {
                     Answers:
                 </label>
             </div>
-            <div className="wd-question-answer-true-row row mb-4">
+            <div className="wd-question-answer-true-row row mb-1">
                 <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
                 {/*{mode == "EDIT" && currQuestion.questionType == "TRUE_FALSE" && <div></div>}*/}
-                <div className="col-3 align-items-center justify-content-end text-start fw-bolder">
-                    <label>
+                <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
+                    <label className={currQuestion.is_correct ? "text-success bg-secondary rounded" : ""}>
                         <input
                             type="radio"
-                            value="true"
                             checked={currQuestion.is_correct}
                             onChange={() => setCurrQuestion({...currQuestion, is_correct: true})}
                         />
-                        True
+                        True&nbsp;
                     </label>
                 </div>
             </div>
+            <div className="wd-question-answer-false-row row mb-4">
+                <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
+                {/*{mode == "EDIT" && currQuestion.questionType == "TRUE_FALSE" && <div></div>}*/}
+                <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
+                    <label className={currQuestion.is_correct == false ? "text-success bg-secondary rounded" : ""}>
+                        <input
+                            type="radio"
+                            checked={!currQuestion.is_correct}
+                            onChange={() => setCurrQuestion({...currQuestion, is_correct: false})}
+                        />
+                        False&nbsp;
+                    </label>
+                </div>
+            </div>
+            {currQuestion.options.filter((option: any) => option.deleted == false)
+                .map((option: any) => (
+                    <div className={`wd-question-choice-${option.number}-row row mb-4`}>
+                        <div className="col-3 d-flex align-items-center justify-content-end fw-bold">
+                            <label className={currQuestion.correctOptionNumber == option.number ? "text-success bg-secondary rounded" : ""}>
+                                <input
+                                    type="radio"
+                                    checked={currQuestion.correctOptionNumber == option.number}
+                                    onChange={() => setCurrQuestion({...currQuestion, correctOptionNumber: option.number})}
+                                />
+                                &nbsp;Mark As Correct&nbsp;
+                            </label>
+                        </div>
+                        <label className="col-6 d-flex align-items-center justify-content-start fw-bold" htmlFor="wd-quiz-possible-answer">
+                            Option:&nbsp;
+                            <input id="wd-quiz-possible-answer"
+                                   className="form-control customized-boarder w-100 align-items-center justify-content-start"
+                                   value={currQuestion.options.find((o: any) => o.number == option.number).text || ""}
+                                   onChange={(e) => handleOptionChange(e, option.number)}/>
+                        </label>
+                        <div className="col-2 d-flex align-items-center justify-content-start">
+                            <button id="wd-save-quiz-btn" className="btn btn-sm btn-danger mb-2 me-2 mb-md-0"
+                                    onClick={() => handleOptionDeleteClick(option.number)}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>))}
+            <div className="wd-question-add-option-row row mb-4">
+                <div className="col-3"/>
+                <div className="col-6">
+                    <button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
+                            onClick={handleAddOptionClick}>
+                        Add New Option
+                    </button>
+                </div>
+            </div>
+            {currQuestion.correct_answers.map((answer: any, index: number) => (
+                <div className={`wd-question-answer-${index}-row row mb-4`}>
+                    <div className="col-3 d-flex align-items-center justify-content-end fw-bold"></div>
+                    <label className="col-6 d-flex align-items-center justify-content-start fw-bold" htmlFor="wd-quiz-possible-answer">
+                        Answer:&nbsp;
+                        <input id="wd-question-answer"
+                               className="form-control customized-boarder w-100 align-items-center justify-content-start"
+                               value={currQuestion.correct_answers[index]}
+                               onChange={(e) => handleAnswerChange(e, index)}/>
+                    </label>
+                    <div className="col-2 d-flex align-items-center justify-content-start">
+                        <button id="wd-save-quiz-btn" className="btn btn-sm btn-danger mb-2 me-2 mb-md-0"
+                                onClick={() => handleAnswerDeleteClick(index)}>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            ))}
+            <div className="wd-question-add-answer-row row mb-4">
+                <div className="col-3"/>
+                <div className="col-6">
+                    <button id="wd-add-answer-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
+                            onClick={handleAddAnswerClick}>
+                        Add New Answer
+                    </button>
+                </div>
+            </div>
+
 
         </div>
     );
