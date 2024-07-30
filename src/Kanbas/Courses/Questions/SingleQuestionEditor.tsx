@@ -1,37 +1,43 @@
 import {useParams} from "react-router";
 import React, {useEffect, useReducer, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {updateQuestion} from "./reducer";
+import {useNavigate} from "react-router-dom";
+
 export default function SingleQuestionEditor() {
-    const {cid, quizId, questionNumber } = useParams();
+    const {cid, quizId, questionNumber} = useParams();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {questions} = useSelector((state: any) => state.questionReducer);
-    const [currQuestion  , setCurrQuestion] = useState<any|any>();
-    const [mode, setMode] = useState("EDIT");
-    const handlePointsChange = (e:any) => {
+    const [currQuestion, setCurrQuestion] = useState<any | any>();
+    const [mode, setMode] = useState("VIEW");
+    const [isDisabled, setIsDisabled] = useState(false);
+    const handlePointsChange = (e: any) => {
         const value = parseInt(e.target.value, 10);
         if (value >= 0) {
-            setCurrQuestion({ ...currQuestion, points: value });
+            setCurrQuestion({...currQuestion, points: value});
         } else {
-            setCurrQuestion({ ...currQuestion, points: 0 });
+            setCurrQuestion({...currQuestion, points: 0});
         }
     };
-    const handleOptionChange = (e:any, optionNumber:number) => {
+    const handleOptionChange = (e: any, optionNumber: number) => {
         const updatedText = e.target.value;
 
-        setCurrQuestion((prevState:any) => {
-            const updatedOptions = prevState.options.map((option:any) =>
-                option.number === optionNumber ? { ...option, text: updatedText } : option
+        setCurrQuestion((prevState: any) => {
+            const updatedOptions = prevState.options.map((option: any) =>
+                option.number === optionNumber ? {...option, text: updatedText} : option
             );
 
-            return { ...prevState, options: updatedOptions };
+            return {...prevState, options: updatedOptions};
         });
     };
-    const handleOptionDeleteClick = (optionNumber:number) => {
-        setCurrQuestion((prevState:any) => {
-            const updatedOptions = prevState.options.map((option:any) =>
-                option.number === optionNumber ? { ...option, deleted: true} : option
+    const handleOptionDeleteClick = (optionNumber: number) => {
+        setCurrQuestion((prevState: any) => {
+            const updatedOptions = prevState.options.map((option: any) =>
+                option.number === optionNumber ? {...option, deleted: true} : option
             );
 
-            return { ...prevState, options: updatedOptions };
+            return {...prevState, options: updatedOptions};
         });
     }
     const handleAddOptionClick = () => {
@@ -49,21 +55,21 @@ export default function SingleQuestionEditor() {
             };
         });
     };
-    const handleAnswerChange = (e:any,targetIndex:number) =>{
+    const handleAnswerChange = (e: any, targetIndex: number) => {
         const updatedText = e.target.value;
-        setCurrQuestion((prevState:any) => {
-            const updatedAnswers = prevState.correct_answers.map((answer:string, index:number) =>
-                index==targetIndex ? updatedText : answer
+        setCurrQuestion((prevState: any) => {
+            const updatedAnswers = prevState.correct_answers.map((answer: string, index: number) =>
+                index == targetIndex ? updatedText : answer
             );
 
-            return { ...prevState, correct_answers: updatedAnswers };
+            return {...prevState, correct_answers: updatedAnswers};
         });
     }
-    const handleAnswerDeleteClick = (targetIndex:number) => {
-        setCurrQuestion((prevState:any) => {
-            const updatedAnswers = prevState.correct_answers.filter((answer:string, index:number) =>
-                index!=targetIndex);
-            return { ...prevState, correct_answers: updatedAnswers };
+    const handleAnswerDeleteClick = (targetIndex: number) => {
+        setCurrQuestion((prevState: any) => {
+            const updatedAnswers = prevState.correct_answers.filter((answer: string, index: number) =>
+                index != targetIndex);
+            return {...prevState, correct_answers: updatedAnswers};
         });
     }
     const handleAddAnswerClick = () => {
@@ -76,9 +82,15 @@ export default function SingleQuestionEditor() {
             };
         });
     };
+    const handleUpdateClick = () => {
+        dispatch(updateQuestion(currQuestion));
+        setTimeout(() => {
+            navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizId}/Questions`);
+        }, 500);
+    }
 
     useEffect(() => {
-        const question = questions.find((q:any)=>(q.number == questionNumber));
+        const question = questions.find((q: any) => (q.number == questionNumber));
         setCurrQuestion(question);
     }, []);
 
@@ -86,18 +98,167 @@ export default function SingleQuestionEditor() {
         return <div>Loading...</div>;
     }
 
+    if (mode == "VIEW") {
+        return (
+            <div className="wd-questions-single-question-editor d-grid">
+                <div className="wd-question-mode-switch-row row mb-4">
+                    <div className="col-3">
+                        {/*<button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-end"*/}
+                        {/*        onClick={() => console.log(currQuestion)}>*/}
+                        {/*    Show question detail*/}
+                        {/*</button>*/}
+                    </div>
+                    <div className="wd-question-view-mode col-3 d-flex align-items-center justify-content-center">
+                        <button id="wd-question-view-mode-button" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0"
+                                onClick={() => setMode("VIEW")}>
+                            Switch to View Mode
+                        </button>
+                    </div>
+                    <div className="wd-question-edit-mode col-3 d-flex align-items-center justify-content-center">
+                        <button id="wd-question-edit-mode-button" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0"
+                                onClick={() => setMode("EDIT")}>
+                            Switch to Edit Mode
+                        </button>
+                    </div>
+                </div>
+                <div className="wd-question-prompt-row row mb-4">
+                    <div className="col-3"></div>
+                    <div id="wd-mode-prompt"
+                         className="alert alert-secondary col-6 btn-secondary mb-2 me-2 fs-4 fw-bold wfloat-start text-center">
+                        You are currently in view mode
+                    </div>
+                </div>
+                <div className="wd-question-title-row row mb-4">
+                    <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
+                        Question Title
+                    </label><br/>
+                    <div className="col-6 d-flex align-items-center justify-content-start">
+                        {currQuestion.title}
+                    </div>
+                </div>
+                <div className="wd-question-points-row row mb-4">
+                    <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-time-limit">
+                        Points
+                    </label>
+                    <div className="col-6 d-flex align-items-center justify-content-start">
+                        {currQuestion.points}
+                    </div>
+                </div>
+                <div className="wd-question-type-row row mb-4">
+                    <label className="form-label col-3 text-end pt-2 fw-bold" htmlFor="wd-quiz-group">Question Type</label>
+                    <div className="col-6 d-flex align-items-center justify-content-start">
+                        {currQuestion.questionType === "TRUE_FALSE" && "True or False"}
+                        {currQuestion.questionType === "MULTIPLE_CHOICE" && "Multiple Choice"}
+                        {currQuestion.questionType === "FILL_IN_BLANK" && "Fill Blank"}
+                    </div>
+                </div>
+                <div className="wd-question-text-row row mb-4">
+                    <label className="col-3 d-flex align-items-baseline justify-content-end fw-bold mt-2" htmlFor="wd-question-text">
+                        Question Text
+                    </label>
+                    <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
+                              style={{height: '200px', border: '1px solid transparent'}} readOnly>
+                        {currQuestion.text}
+                    </textarea>
+                </div>
+                <div className="wd-question-answer-row row">
+                    <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
+                        Answers:
+                    </label>
+                </div>
+                {currQuestion.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-1">
+                    <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
+                    <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
+                        <label className={currQuestion.is_correct ? "text-success bg-secondary rounded" : ""}>
+                            <input
+                                type="radio"
+                                checked={currQuestion.is_correct}
+                            />
+                            True&nbsp;
+                        </label>
+                    </div>
+                </div>}
+                {currQuestion.questionType == "TRUE_FALSE" && <div className="wd-question-answer-false-row row mb-4">
+                    <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
+                    <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
+                        <label className={currQuestion.is_correct == false ? "text-success bg-secondary rounded" : ""}>
+                            <input
+                                type="radio"
+                                checked={!currQuestion.is_correct}
+                            />
+                            False&nbsp;
+                        </label>
+                    </div>
+                </div>}
+                {currQuestion.questionType == "MULTIPLE_CHOICE" && currQuestion.options.filter((option: any) => option.deleted == false)
+                    .map((option: any) => (
+                        <div className={`wd-question-choice-${option.number}-row row mb-4`}>
+                            <div className="col-3 d-flex align-items-center justify-content-end fw-bold">
+                            </div>
+                            <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
+                                   htmlFor="wd-quiz-possible-answer">
+                                Option:&nbsp;
+                                <div className={`col-6 d-flex align-items-center justify-content-start 
+                                ${currQuestion.correctOptionNumber == option.number? "bg-success": "bg-secondary"}`}>
+                                    {currQuestion.options.find((o: any) => o.number == option.number).text || ""}
+                                </div>
+                            </label>
+                        </div>))}
+                {currQuestion.questionType == "FILL_IN_BLANK" && currQuestion.correct_answers.map((answer: any, index: number) => (
+                    <div className={`wd-question-answer-${index}-row row mb-4`}>
+                        <div className="col-3 d-flex align-items-center justify-content-end fw-bold"></div>
+                        <label className="col-6 d-flex align-items-center justify-content-start fw-bold" htmlFor="wd-quiz-possible-answer">
+                            Answer:&nbsp;
+                            <div className="col-6 d-flex align-items-center justify-content-start">
+                                {currQuestion.correct_answers[index]}
+                            </div>
+                        </label>
+                    </div>
+                    ))}
+                <hr/>
+                <div className="wd-question-buttons-row col-7 mb-4">
+                    <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"
+                            onClick={handleUpdateClick} disabled={isDisabled}>
+                        Update
+                    </button>
+                    <a href={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${quizId}/Questions`}>
+                        <button id="wd-cancel-quiz-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">
+                            Cancel
+                        </button>
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="wd-questions-single-question-editor d-grid">
-            <div className="col-4 d-flex justify-content-center align-items-center">
-                <a href={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${quizId}/Questions`}>
-                    <button id="wd-cancel-quiz-btn" className="btn btn-sm btn-secondary mb-2 text-center">
-                        Back to Questions
+            <div className="row mb-4">
+                <div className="col-3">
+                    {/*<button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-end"*/}
+                    {/*        onClick={() => console.log(currQuestion)}>*/}
+                    {/*    Show question detail*/}
+                    {/*</button>*/}
+                </div>
+                <div className="wd-question-view-mode col-3 d-flex align-items-center justify-content-center">
+                    <button id="wd-question-view-mode-button" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0"
+                            onClick={() => setMode("VIEW")}>
+                        Switch to View Mode
                     </button>
-                </a>
-                <button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
-                        onClick={() => console.log(currQuestion)}>
-                    Show question detail
-                </button>
+                </div>
+                <div className="wd-question-edit-mode col-3 d-flex align-items-center justify-content-center">
+                    <button id="wd-question-edit-mode-button" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0"
+                            onClick={() => setMode("EDIT")}>
+                        Switch to Edit Mode
+                    </button>
+                </div>
+            </div>
+            <div className="wd-question-prompt-row row mb-4">
+                <div className="col-3"></div>
+                <div id="wd-mode-prompt"
+                     className="alert alert-secondary col-6 btn-secondary mb-2 me-2 fs-4 fw-bold wfloat-start text-center">
+                    You are currently in edit mode
+                </div>
             </div>
             <div className="wd-question-title-row row mb-4">
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
@@ -143,7 +304,7 @@ export default function SingleQuestionEditor() {
                     Answers:
                 </label>
             </div>
-            <div className="wd-question-answer-true-row row mb-1">
+            {currQuestion.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-1">
                 <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
                 {/*{mode == "EDIT" && currQuestion.questionType == "TRUE_FALSE" && <div></div>}*/}
                 <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
@@ -156,8 +317,8 @@ export default function SingleQuestionEditor() {
                         True&nbsp;
                     </label>
                 </div>
-            </div>
-            <div className="wd-question-answer-false-row row mb-4">
+            </div>}
+            {currQuestion.questionType == "TRUE_FALSE" && <div className="wd-question-answer-false-row row mb-4">
                 <div className="col-3 d-flex align-items-center justify-content-end fw-bold"/>
                 {/*{mode == "EDIT" && currQuestion.questionType == "TRUE_FALSE" && <div></div>}*/}
                 <div className="col-3 align-items-center justify-content-end text-start fw-bolder fs-4">
@@ -170,8 +331,8 @@ export default function SingleQuestionEditor() {
                         False&nbsp;
                     </label>
                 </div>
-            </div>
-            {currQuestion.options.filter((option: any) => option.deleted == false)
+            </div>}
+            {currQuestion.questionType == "MULTIPLE_CHOICE" && currQuestion.options.filter((option: any) => option.deleted == false)
                 .map((option: any) => (
                     <div className={`wd-question-choice-${option.number}-row row mb-4`}>
                         <div className="col-3 d-flex align-items-center justify-content-end fw-bold">
@@ -198,7 +359,7 @@ export default function SingleQuestionEditor() {
                             </button>
                         </div>
                     </div>))}
-            <div className="wd-question-add-option-row row mb-4">
+            {currQuestion.questionType == "MULTIPLE_CHOICE" && <div className="wd-question-add-option-row row mb-4">
                 <div className="col-3"/>
                 <div className="col-6">
                     <button id="wd-add-option-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
@@ -206,8 +367,8 @@ export default function SingleQuestionEditor() {
                         Add New Option
                     </button>
                 </div>
-            </div>
-            {currQuestion.correct_answers.map((answer: any, index: number) => (
+            </div>}
+            {currQuestion.questionType == "FILL_IN_BLANK" && currQuestion.correct_answers.map((answer: any, index: number) => (
                 <div className={`wd-question-answer-${index}-row row mb-4`}>
                     <div className="col-3 d-flex align-items-center justify-content-end fw-bold"></div>
                     <label className="col-6 d-flex align-items-center justify-content-start fw-bold" htmlFor="wd-quiz-possible-answer">
@@ -225,7 +386,7 @@ export default function SingleQuestionEditor() {
                     </div>
                 </div>
             ))}
-            <div className="wd-question-add-answer-row row mb-4">
+            {currQuestion.questionType == "FILL_IN_BLANK" && <div className="wd-question-add-answer-row row mb-4">
                 <div className="col-3"/>
                 <div className="col-6">
                     <button id="wd-add-answer-btn" className="btn btn-lg btn-secondary mb-2 me-2 mb-md-0 float-start"
@@ -233,8 +394,19 @@ export default function SingleQuestionEditor() {
                         Add New Answer
                     </button>
                 </div>
+            </div>}
+            <hr/>
+            <div className="wd-question-buttons-row col-7 mb-4">
+                <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"
+                        onClick={handleUpdateClick} disabled={isDisabled}>
+                    Update
+                </button>
+                <a href={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${quizId}/Questions`}>
+                    <button id="wd-cancel-quiz-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">
+                        Cancel
+                    </button>
+                </a>
             </div>
-
 
         </div>
     );

@@ -10,8 +10,8 @@ const questionSlice = createSlice({
         setQuestions: (state, action) => {
             state.questions = action.payload;
         },
-        addQuiz: (state, { payload: quiz }) => {
-            // state.quizzes = [...state.quizzes, quiz] as any;
+        addQuestion: (state, { payload: question}) => {
+            state.questions = [...state.questions, question] as any;
         },
         deleteQuestion: (state, { payload: questionNumber }) => {
             state.questions = state.questions.map((question: any) => {
@@ -24,10 +24,10 @@ const questionSlice = createSlice({
                 return question;
             }) as any;
         },
-        updateQuiz: (state, { payload: newQuiz }) => {
-            // state.quizzes= state.quizzes.map((quiz:any) =>
-            //     quiz._id === newQuiz._id ? newQuiz : quiz
-            // ) as any;
+        updateQuestion: (state, { payload: newQuestion }) => {
+            state.questions= state.questions.map((q:any) =>
+                q._id === newQuestion._id ? newQuestion : q
+            ) as any;
         },
         editAssignment: (state, { payload: assignment }) => {
             // state.assignments = state.assignments.map((m: any) =>
@@ -36,9 +36,9 @@ const questionSlice = createSlice({
         },
     },
 });
-export const { addQuiz,
+export const { addQuestion,
     deleteQuestion,
-    updateQuiz,
+    updateQuestion,
     editAssignment,
     setQuestions } = questionSlice.actions;
 export default questionSlice.reducer;

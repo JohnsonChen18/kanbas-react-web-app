@@ -138,7 +138,7 @@ export default function QuizDetailScreen() {
                     <div className="col-6 text-start">{currQuiz.lockQuestion ? "Yes" : "No"}</div>
                 </div>
                 <div className="wd-quiz-detail-description row">
-                    <div className="col-4 text-end fw-bold">Description</div>
+                    <div className="col-4 text-end fw-bold mt-2">Description</div>
                     {/*<div className="col-6 text-start overflow-auto">{currQuiz.description}</div>*/}
                     <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
                               style={{height: '200px',border: '1px solid transparent' }} readOnly>

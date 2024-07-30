@@ -2,7 +2,7 @@ import * as questionClient from "../../Questions/client";
 import React, {useEffect, useState} from "react";
 import {Route, Routes, useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
-import {setQuestions, deleteQuestion} from "../../Questions/reducer";
+import {setQuestions, deleteQuestion, addQuestion} from "../../Questions/reducer";
 import {Link, useNavigate} from "react-router-dom";
 import {FaPlus} from "react-icons/fa6";
 import SingleQuestionEditor from "../../Questions/SingleQuestionEditor";
@@ -11,13 +11,6 @@ export default function QuestionsTab({quiz, setQuiz}: { quiz: any, setQuiz: any 
     const {cid, quizId} = useParams();
     const dispatch = useDispatch();
     const {questions} = useSelector((state: any) => state.questionReducer);
-    const fetchQuestions = async () => {
-        const questions = await questionClient.findQuestionsByQuiz(quizId as string);
-        dispatch(setQuestions([...questions].sort((a, b) => a.number - b.number)));
-    }
-    useEffect(() => {
-        fetchQuestions();
-    }, []);
 
     return (
         <div className="wd-quiz-editor-questions-tab d-grid">
@@ -38,19 +31,38 @@ function QuestionsScreen() {
     const handleDeleteClick = (questionNumber: number) => {
         dispatch(deleteQuestion(questionNumber));
     }
-    const handleSaveClick = () => {
+    const handleSaveClick = async () => {
         if (isDisabled) return;
 
         setIsDisabled(true);
-        questionClient.updateQuestions(questions);
+        await questionClient.updateQuestions(questions);
         setTimeout(() => {
             navigate(`/Kanbas/Courses/${cid}/Quizzes`);
         }, 500);
     };
+    const handleAddQuestionClick = () => {
+        console.log("called");
+        const newQuestion = {
+            title: "DEFAULT_QUIZ_TITLE",
+            quiz: quizId,
+            points: 0,
+            number: questions[questions.length - 1].number + 1,
+            questionType: "MULTIPLE_CHOICE",
+            text: "DEFAULT_QUESTION_DESCRIPTION",
+            options: [],
+            is_correct: false,
+            correct_answers: [],
+            deleted: false,
+            nextOptionNumber: 1,
+            correctOptionNumber: 1,
+        };
+        dispatch(addQuestion(newQuestion));
+        navigate(`${newQuestion.number}`);
+    };
     return (
         <div className="wd-quiz-editor-questions-screen d-grid">
             <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                    onClick={() => console.log(questions)}>
+                    onClick={()=>console.log(questions)}>
                 <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
                 show quiz log
             </button>
@@ -77,7 +89,8 @@ function QuestionsScreen() {
             ))}
             <div className="wd-quiz-editor-question-add-button-row row">
                 <div className="col-5">
-                    <button id="wd-add-question-btn" className="float-end btn btn-lg btn-secondary mb-2 mb-md-0">
+                    <button id="wd-add-question-btn" className="float-end btn btn-lg btn-secondary mb-2 mb-md-0"
+                            onClick={handleAddQuestionClick}>
                         <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
                         New Question
                     </button>

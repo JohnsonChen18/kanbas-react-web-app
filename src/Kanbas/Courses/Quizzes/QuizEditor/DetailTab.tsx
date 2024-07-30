@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useParams} from "react-router";
 import * as client from "../client";
 import {useDispatch} from "react-redux";
 import {updateQuiz} from "../reducer";
+import * as questionClient from "../../Questions/client";
+import {setQuestions} from "../../Questions/reducer";
 
 export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
     const navigate = useNavigate();
@@ -245,7 +247,8 @@ export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) 
                         </div>
                     </div>
                 </div>
-            </div><hr/>
+            </div>
+            <hr/>
             <div className="wd-editor-buttons-row col-7 mb-4">
                 <button id="wd-save-quiz-btn" className="btn btn-lg btn-success mb-2 mb-md-0 float-end"
                         onClick={handleSavePublishClick} disabled={isDisabled}>
