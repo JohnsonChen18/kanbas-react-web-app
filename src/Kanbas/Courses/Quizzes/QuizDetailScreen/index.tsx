@@ -56,7 +56,7 @@ export default function QuizDetailScreen() {
                                 Edit
                             </a>
                             <a id="wd-preview-quiz-btn" className="float-end btn btn-lg btn-secondary mb-2 me-2 mb-md-0"
-                               href={`#/Kanbas/Courses/${cid}/Quizzes/new`}>
+                               href={`#/Kanbas/Courses/${cid}/Quizzes/View/${currQuiz._id}`}>
                                 Preview
                             </a>
                         </div>

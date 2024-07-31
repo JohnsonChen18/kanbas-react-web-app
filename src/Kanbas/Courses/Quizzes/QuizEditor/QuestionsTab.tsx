@@ -34,7 +34,7 @@ function QuestionsScreen() {
         console.log("called");
         const newNumber = questions.length > 0 ? questions[questions.length - 1].number+1:1;
         const newQuestion = {
-            title: "DEFAULT_QUIZ_TITLE",
+            title: "DEFAULT_QUESTION_TITLE",
             quiz: quizId,
             points: 0,
             number: newNumber,
