@@ -27,26 +27,17 @@ function QuestionsScreen() {
     const {cid, quizId} = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [isDisabled, setIsDisabled] = useState(false);
     const handleDeleteClick = (questionNumber: number) => {
         dispatch(deleteQuestion(questionNumber));
     }
-    const handleSaveClick = async () => {
-        if (isDisabled) return;
-
-        setIsDisabled(true);
-        await questionClient.updateQuestions(questions);
-        setTimeout(() => {
-            navigate(`/Kanbas/Courses/${cid}/Quizzes`);
-        }, 500);
-    };
     const handleAddQuestionClick = () => {
         console.log("called");
+        const newNumber = questions.length > 0 ? questions[questions.length - 1].number+1:1;
         const newQuestion = {
             title: "DEFAULT_QUIZ_TITLE",
             quiz: quizId,
             points: 0,
-            number: questions[questions.length - 1].number + 1,
+            number: newNumber,
             questionType: "MULTIPLE_CHOICE",
             text: "DEFAULT_QUESTION_DESCRIPTION",
             options: [],
@@ -57,15 +48,10 @@ function QuestionsScreen() {
             correctOptionNumber: 1,
         };
         dispatch(addQuestion(newQuestion));
-        navigate(`${newQuestion.number}`);
+        navigate(`${newNumber}`);
     };
     return (
         <div className="wd-quiz-editor-questions-screen d-grid">
-            <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                    onClick={()=>console.log(questions)}>
-                <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
-                show quiz log
-            </button>
             {questions.filter((question: any) => (question.deleted == false)).map((question: any, index: number) => (
                 <div className="wd-quiz-editor-questions-row row mb-3">
                     <div className="col-3 d-flex align-items-center justify-content-end">
@@ -77,8 +63,6 @@ function QuestionsScreen() {
                     <div className="col-1 d-flex align-items-center justify-content-center">
                         <Link className="wd-quiz-editor-question-number fw-bolder text-danger"
                               to={`${question.number}`}>
-                            {/*<Link className="wd-quiz-editor-question-number col-4 fw-bolder text-danger text-end mb-4"*/}
-                            {/*      to={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${quizId}/Questions/${question.number}`}>*/}
                             {`Question ${index + 1}`}
                         </Link>
                     </div>
@@ -95,18 +79,6 @@ function QuestionsScreen() {
                         New Question
                     </button>
                 </div>
-            </div>
-            <hr/>
-            <div className="wd-questions-editor-buttons-row col-5 mb-4">
-                <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"
-                        onClick={handleSaveClick} disabled={isDisabled}>
-                    Save
-                </button>
-                <a href={`#/Kanbas/Courses/${cid}/Quizzes`}>
-                    <button id="wd-cancel-quiz-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">
-                        Cancel
-                    </button>
-                </a>
             </div>
         </div>
     );

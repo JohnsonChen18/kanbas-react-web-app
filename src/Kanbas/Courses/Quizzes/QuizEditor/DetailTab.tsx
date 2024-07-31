@@ -248,22 +248,22 @@ export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) 
                     </div>
                 </div>
             </div>
-            <hr/>
-            <div className="wd-editor-buttons-row col-7 mb-4">
-                <button id="wd-save-quiz-btn" className="btn btn-lg btn-success mb-2 mb-md-0 float-end"
-                        onClick={handleSavePublishClick} disabled={isDisabled}>
-                    Save & Publish
-                </button>
-                <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"
-                        onClick={handleSaveClick} disabled={isDisabled}>
-                    Save
-                </button>
-                <a href={`#/Kanbas/Courses/${cid}/Quizzes`}>
-                    <button id="wd-cancel-quiz-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">
-                        Cancel
-                    </button>
-                </a>
-            </div>
+            {/*<hr/>*/}
+            {/*<div className="wd-editor-buttons-row col-7 mb-4">*/}
+            {/*    <button id="wd-save-quiz-btn" className="btn btn-lg btn-success mb-2 mb-md-0 float-end"*/}
+            {/*            onClick={handleSavePublishClick} disabled={isDisabled}>*/}
+            {/*        Save & Publish*/}
+            {/*    </button>*/}
+            {/*    <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"*/}
+            {/*            onClick={handleSaveClick} disabled={isDisabled}>*/}
+            {/*        Save*/}
+            {/*    </button>*/}
+            {/*    <a href={`#/Kanbas/Courses/${cid}/Quizzes`}>*/}
+            {/*        <button id="wd-cancel-quiz-btn" className="btn btn-lg btn-secondary me-2 mb-2 mb-md-0 float-end">*/}
+            {/*            Cancel*/}
+            {/*        </button>*/}
+            {/*    </a>*/}
+            {/*</div>*/}
         </div>
     );
 }

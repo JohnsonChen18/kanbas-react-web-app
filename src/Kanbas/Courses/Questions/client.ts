@@ -8,7 +8,7 @@ export const createQuestion = async (question: any) => {
 export const findQuestionsByQuiz = async (quizId: string) => {
     const response = await axios
         .get(`${QUESTIONS_API}/quiz/${quizId}`);
-    return response.data.filter((question: any) => question.deleted == false);
+    return response.data;
 };
 export const updateQuestions = async (questions: any) => {
     const response = await axios.put(`${QUESTIONS_API}`,  questions);
