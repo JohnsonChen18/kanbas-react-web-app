@@ -25,7 +25,10 @@ export default function QuizTaking() {
     const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const [currQuiz, setCurrQuiz] = useState(quizzes.find((quiz: any) => quiz._id === quizId));
     const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(currQuiz.timeLimit * 60);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const handleSubmitClick = async () => {
+        setIsSubmitted(true);
         await quizRecordClient.createQuizRecord(quizRecord, questions);
         navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}`);
     };
@@ -33,6 +36,7 @@ export default function QuizTaking() {
         const userId = currentUser._id;
         await dispatch(createQuizRecord({questions, quizId, userId}));
     };
+
     useEffect(() => {
         const init = async () => {
             console.log(questions);
@@ -41,10 +45,25 @@ export default function QuizTaking() {
         init();
     }, []);
 
+    useEffect(() => {
+        if (timeLeft === 0 && !isSubmitted) {
+            handleSubmitClick();
+        }
+
+        const timer = timeLeft > 0 ? setInterval(() => setTimeLeft(timeLeft - 1), 1000) : null;
+
+        return () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+        };
+    }, [timeLeft, isSubmitted]);
+
     return (
         <div className="wd-quiz-view-screen">
             <div className="wd-quiz-view-quiz-name">
                 <h2>{currQuiz.name}</h2>
+                <div>{timeLeft}</div>
                 <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
                 <div className="btn" onClick={() => console.log(questions)}> show questions</div>
             </div>
@@ -60,7 +79,7 @@ export default function QuizTaking() {
             ))}
             <hr/>
             <div className="wd-quiz-view-buttons-row row mb-4">
-            <div className="col-4">
+                <div className="col-4">
                     {!currQuiz.lockQuestion && currQuiz.oneQuestionLimit && currQuestionIndex > 0 &&
                         <button id="wd-quiz-pre-btn" className="btn btn-lg btn-secondary mb-2 ms-4 mb-md-0 float-start"
                                 onClick={() => setCurrQuestionIndex(currQuestionIndex - 1)}>
@@ -105,6 +124,7 @@ function QuestionContainer({question, quiz}: {
     const questionRecords = quizRecord.questionRecords;
     const [currRecord, setCurrRecord] = useState<any>({});
     const [optionArr, setOptionArr] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const saveRecordChange = async (newRecord: any) => {
         dispatch(updateOneQuestionRecord(newRecord));
     };
@@ -128,16 +148,16 @@ function QuestionContainer({question, quiz}: {
     };
 
     useEffect(() => {
-        if (question && questionRecords) {
-            const currQuestionRecord = quizRecord.questionRecords.find((record: any) => (record.questionId === question._id));
+        if (question && quizRecord.questionRecords) {
+            const currQuestionRecord = quizRecord.questionRecords.find((record: any) => record.questionId === question._id);
             if (currQuestionRecord) {
                 setCurrRecord(currQuestionRecord);
             }
+            setLoading(false);
         }
-    }, [question, quiz]);
+    }, [question, quiz, quizRecord.questionRecords]);
 
-
-    if (question == undefined) return <div>undefined question</div>;
+    if (loading) return <div>Loading...</div>;
     if (currRecord == undefined) return <div>undefined currRecord</div>;
     if (currRecord.fillInBlankAnswers == undefined) return <div>undefined question</div>;
 
