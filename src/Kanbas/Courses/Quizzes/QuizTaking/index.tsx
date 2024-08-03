@@ -48,15 +48,20 @@ export default function QuizTaking() {
                 <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
                 <div className="btn" onClick={() => console.log(questions)}> show questions</div>
             </div>
-            <div id="wd-quiz-view-prompt"
-                 className="alert alert-danger mb-4 me-2 fs-4 text-center fs-2">
+            {currentUser.role == "FACULTY" && <div id="wd-quiz-view-prompt" className="alert alert-danger mb-2 me-2 fs-4 text-center fs-2">
                 You are currently in preview mode as a faculty
-            </div>
-            <QuestionContainer question={questions[currQuestionIndex]} quiz={currQuiz}/>
+            </div>}
+            {currQuiz.lockQuestion && <div id="wd-quiz-view-prompt" className="alert alert-secondary mb-2 me-2 text-center fs-5">
+                Question Lock is activated. You can't go back to previous questions.
+            </div>}
+            {currQuiz.oneQuestionLimit && <QuestionContainer question={questions[currQuestionIndex]} quiz={currQuiz}/>}
+            {!currQuiz.oneQuestionLimit && questions.map((q: any) => (
+                <QuestionContainer key={q._id} question={q} quiz={currQuiz}/>
+            ))}
             <hr/>
             <div className="wd-quiz-view-buttons-row row mb-4">
-                <div className="col-4">
-                    {currQuestionIndex > 0 &&
+            <div className="col-4">
+                    {!currQuiz.lockQuestion && currQuiz.oneQuestionLimit && currQuestionIndex > 0 &&
                         <button id="wd-quiz-pre-btn" className="btn btn-lg btn-secondary mb-2 ms-4 mb-md-0 float-start"
                                 onClick={() => setCurrQuestionIndex(currQuestionIndex - 1)}>
                             Pre
@@ -68,14 +73,14 @@ export default function QuizTaking() {
                     </button>
                 </div>
                 <div className="col-4">
-                    {currQuestionIndex < questions.length - 1 &&
+                    {currQuiz.oneQuestionLimit && currQuestionIndex < questions.length - 1 &&
                         <button id="wd-quiz-next-btn" className="btn btn-lg btn-secondary me-4 mb-2 mb-md-0 float-end"
                                 onClick={() => setCurrQuestionIndex(currQuestionIndex + 1)}>
                             Next
                         </button>}
                 </div>
             </div>
-            <div className="wd-quiz-view-jump-buttons d-grid">
+            {!currQuiz.lockQuestion && <div className="wd-quiz-view-jump-buttons d-grid">
                 <div className="wd-quiz-view-jump-row text-start text-danger"><h3>Jump To:</h3></div>
                 {questions.map((question: any, index: number) => (
                     <div className="wd-quiz-view-jump-buttons-row text-start">
@@ -85,7 +90,7 @@ export default function QuizTaking() {
                         </span>
                     </div>
                 ))}
-            </div>
+            </div>}
         </div>
     );
 }
@@ -134,6 +139,7 @@ function QuestionContainer({question, quiz}: {
 
     if (question == undefined) return <div>undefined question</div>;
     if (currRecord == undefined) return <div>undefined currRecord</div>;
+    if (currRecord.fillInBlankAnswers == undefined) return <div>undefined question</div>;
 
     return (
         <div className="wd-quiz-view-content-container container">

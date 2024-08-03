@@ -92,6 +92,10 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
         dispatch(setQuestions(questions));
     }
     const handleSaveClick = async () => {
+        if (quiz.lockQuestion == true && quiz.oneQuestionLimit==false){
+            alert("If you want to enable Lock Questions After Answering, you have to also enable One Question at a Time")
+            return;
+        }
         if (isDisabled) return;
         setIsDisabled(true);
         saveQuiz(quiz);
@@ -101,6 +105,10 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
         }, 500);
     };
     const handleSavePublishClick = () => {
+        if (quiz.lockQuestion == true && quiz.oneQuestionLimit==false){
+            alert("If you want to enable Lock Questions After Answering, you have to also enable One Question at a Time")
+            return;
+        }
         if (isDisabled) return;
         setIsDisabled(true);
         const publishedQuiz = {...quiz, published: true};
