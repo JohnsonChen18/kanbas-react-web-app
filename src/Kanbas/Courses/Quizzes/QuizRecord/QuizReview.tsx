@@ -51,21 +51,19 @@ export default function QuizReview() {
             </div>
             {questions.map((question:any)=>{
                 const record = quizRecord.questionRecords.find((qRecord:any)=> qRecord.questionId == question._id);
-                return(<QuestionContent question={question} questionRecord={record}/>);
+                return(<QuestionContent question={question} questionRecord={record} currQuiz={currQuiz}/>);
             })}
         </div>
     );
 };
 
-function QuestionContent({question, questionRecord}: { question: any, questionRecord:any }) {
+function QuestionContent({question, questionRecord, currQuiz}: { question: any, questionRecord:any, currQuiz:any }) {
     const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [currQuestionRecord, setCurrQuestionRecord] = useState(questionRecord);
     useEffect(() => {
         setCurrQuestionRecord(questionRecord);
     }, [questionRecord]);
-
-
-
 
     if (currQuestionRecord == undefined) return <div> undefined</div>
 
@@ -134,39 +132,50 @@ function QuestionContent({question, questionRecord}: { question: any, questionRe
                         </div>
                     ))}
                     <hr/>
-                    <div className="mb-2 fw-bold">Correct Answer:</div>
-                    {question.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-2">
-                        <label className="ms-2">
-                            &nbsp;{question.is_correct? "True":"False"}&nbsp;
-                        </label></div>}
-                    {question.questionType == "MULTIPLE_CHOICE" && question.options.filter((option: any) => (option.deleted == false && option.number==question.correctOptionNumber)).map((option: any) => (
-                        <div className={`wd-question-choice-${option.number}-row row mb-4`}>
-                            <label className="col-6 d-flex align-items-center justify-content-start ms-2"
-                                   htmlFor="wd-quiz-possible-answer">
-                                <div className={`col-6 d-flex align-items-center justify-content-start`}>
-                                    {question.options.find((o: any) => o.number == option.number).text || ""}
-                                </div>
-                            </label>
-                        </div>
-                    ))}
-                    {question.questionType == "FILL_IN_BLANK" && question.correct_answers.map((answer: any, index: any) => (
-                        <div>
-                            <div className={`wd-question-answer-${index}-row row mb-4`}>
-                                <div className="col-1">
-                                    <label className="d-flex align-items-center justify-content-end"
-                                           htmlFor="wd-quiz-possible-answer">
-                                        {`Blank ${index + 1}: `}
-                                    </label>
-                                </div>
-                                <div className="col-6 d-flex align-items-center">
-                                    {answer}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    {currentUser.role == "FACULTY" && <CorrectAnswersComponent question={question}/>}
+                    {currentUser.role == "STUDENT" && currQuiz.showCorrectAnswers != "NEVER" &&
+                        (currQuiz.showCorrectAnswers == "RIGHT_AFTER" || new Date() >= new Date(currQuiz.whenToShowAnswers)) &&
+                        <CorrectAnswersComponent question={question}/>}
                 </div>
             </div>
         </div>
     );
-
 }
+
+function CorrectAnswersComponent({question}: { question: any}) {
+    return (
+        <div className="wd-quiz-review-correct-answers">
+            <div className="mb-2 fw-bold">Correct Answer:</div>
+            {question.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-2">
+                <label className="ms-2">
+                    &nbsp;{question.is_correct? "True":"False"}&nbsp;
+                </label></div>}
+            {question.questionType == "MULTIPLE_CHOICE" && question.options.filter((option: any) => (option.deleted == false && option.number==question.correctOptionNumber)).map((option: any) => (
+                <div className={`wd-question-choice-${option.number}-row row mb-4`}>
+                    <label className="col-6 d-flex align-items-center justify-content-start ms-2"
+                           htmlFor="wd-quiz-possible-answer">
+                        <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                            {question.options.find((o: any) => o.number == option.number).text || ""}
+                        </div>
+                    </label>
+                </div>
+            ))}
+            {question.questionType == "FILL_IN_BLANK" && question.correct_answers.map((answer: any, index: any) => (
+                <div>
+                    <div className={`wd-question-answer-${index}-row row mb-4`}>
+                        <div className="col-1">
+                            <label className="d-flex align-items-center justify-content-end"
+                                   htmlFor="wd-quiz-possible-answer">
+                                {`Blank ${index + 1}: `}
+                            </label>
+                        </div>
+                        <div className="col-6 d-flex align-items-center">
+                            {answer}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+

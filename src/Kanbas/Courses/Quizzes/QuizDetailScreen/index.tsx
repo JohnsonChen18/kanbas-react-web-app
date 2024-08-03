@@ -239,7 +239,7 @@ export default function QuizDetailScreen() {
                 </div>
                 <div id="wd-quiz-view-prompt" className="alert alert-dark mt-2 text-center">
                     {currentUser.role == "FACULTY" && "Note: As a faculty, you can always preview the quiz. But only the last attempt will be listed."}
-                    {currentUser.role == "STUDENT" && "Note: As a student, you can not exceed the attempt limit. Your highest score will be recorded." +
+                    {currentUser.role == "STUDENT" && "Note: As a student, you can not exceed the attempt limit. Your latest score will be recorded." +
                         " You can only review your last attempt."}
                 </div>
             </div>
