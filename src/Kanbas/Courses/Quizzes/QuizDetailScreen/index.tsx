@@ -1,15 +1,29 @@
 import {useParams} from "react-router";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {FaPlus} from "react-icons/fa6";
 import {FaCheckCircle} from "react-icons/fa";
 import {AiOutlineStop} from "react-icons/ai";
+import {createQuizRecord} from "../QuizRecord/reducer";
+import * as questionClient from "../../Questions/client";
+import * as quizRecordClient from "../QuizRecord/client";
+import {setQuestions} from "../../Questions/reducer";
+import {findAttemptsForOneQuiz} from "../QuizRecord/client";
 
 export default function QuizDetailScreen() {
+    interface Attempt {
+        startTime: string;
+        grade: string
+    }
+
+    const dispatch = useDispatch();
     const {quizId, cid} = useParams();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const {quizzes} = useSelector((state: any) => state.quizReducer);
+    const {questions} = useSelector((state: any) => state.questionReducer);
+    const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const [currQuiz, setCurrQuiz] = useState(quizzes.find((quiz: any) => quiz._id === quizId));
+    const [attempts, setAttempts] = useState<[Attempt]>([] as any);
 
     function formatQuizType(input: String) {
         const words = input.toLowerCase().split('_');
@@ -44,6 +58,26 @@ export default function QuizDetailScreen() {
         return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
     }
 
+    const fetchQuestions = async () => {
+        const questions = await questionClient.findQuestionsByQuiz(quizId as string);
+        await dispatch(setQuestions([...questions].filter((question: any) => question.deleted == false).sort((a, b) => a.number - b.number)));
+    }
+    const fetchAttempts = async () => {
+        const attempts = await quizRecordClient.findAttemptsForOneQuiz(currentUser._id as string, quizId as string);
+        await setAttempts(attempts.sort((a: any, b: any) => {
+            const dateA = new Date(a.startTime);
+            const dateB = new Date(b.startTime);
+
+            if (dateA > dateB) return -1;
+            if (dateA < dateB) return 1;
+            return 0;
+        }));
+    }
+    useEffect(() => {
+        fetchQuestions();
+        fetchAttempts();
+    }, []);
+
 
     return (
         <div className="wd-quiz-detail">
@@ -56,7 +90,7 @@ export default function QuizDetailScreen() {
                                 Edit
                             </a>
                             <a id="wd-preview-quiz-btn" className="float-end btn btn-lg btn-secondary mb-2 me-2 mb-md-0"
-                               href={`#/Kanbas/Courses/${cid}/Quizzes/View/${currQuiz._id}`}>
+                               href={`#/Kanbas/Courses/${cid}/Quizzes/Taking/${currQuiz._id}`}>
                                 Preview
                             </a>
                         </div>
@@ -114,10 +148,10 @@ export default function QuizDetailScreen() {
                 </div>
                 <div className="wd-quiz-detail-show-answers row">
                     <div className="col-4 text-end fw-bold">Show Correct Answers</div>
-                    <div className="col-6 text-start">{currQuiz.showCorrectAnswers ?
+                    <div className="col-6 text-start">{currQuiz.showCorrectAnswers != "NEVER" ?
                         <div className="wd-quiz-detail-when-show-answers">
-                            {currQuiz.whenToShowAnswers === "AFTER_ALL" && "After all questions"}
-                            {currQuiz.whenToShowAnswers === "AFTER_EACH" && "After each question"}
+                            {currQuiz.showCorrectAnswers === "RIGHT_AFTER" && "Right after quiz"}
+                            {currQuiz.showCorrectAnswers === "SET_TIME" && formatDate(currQuiz.whenToShowAnswers)}
                         </div> : "No"}
                     </div>
                 </div>
@@ -141,13 +175,13 @@ export default function QuizDetailScreen() {
                     <div className="col-4 text-end fw-bold mt-2">Description</div>
                     {/*<div className="col-6 text-start overflow-auto">{currQuiz.description}</div>*/}
                     <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
-                              style={{height: '200px',border: '1px solid transparent' }} readOnly>
+                              style={{height: '75px', border: '1px solid transparent'}} readOnly>
                         {currQuiz.description}
                     </textarea>
                 </div>
             </div>
-            <br/> <br/> <br/>
-            <div className="wd-quiz-detail-time d-grid">
+            <br/>
+            <div className="wd-quiz-detail-time d-grid mb-5">
                 <div className="wd-quiz-detail-time-title-row row">
                     <div className="wd-quiz-detail-due-date col-4 fw-bolder text-start">Due date</div>
                     <div className="wd-quiz-detail-available-date col-4 fw-bolder text-start">Available date</div>
@@ -159,6 +193,28 @@ export default function QuizDetailScreen() {
                     <div
                         className="wd-quiz-detail-available-date col-4 text-start">{formatDate(currQuiz.availableDate)}</div>
                     <div className="wd-quiz-detail-until-date col-4 text-start">{formatDate(currQuiz.untilDate)}</div>
+                </div>
+            </div>
+
+            <div className="wd-quiz-attempt-history d-grid">
+                <div className="wd-quiz-detail-time-title-row row d-flex align-items-end">
+                    <div className="wd-quiz-detail-due-date col-4 fw-bolder text-start text-danger fs-4">Last Attempt</div>
+                    <div className="wd-quiz-detail-available-date col-4 fw-bolder text-start">Start Time</div>
+                    <div className="wd-quiz-detail-until-date col-4 fw-bolder text-start">Score</div>
+                </div>
+                <hr/>
+                <div className="wd-quiz-detail-attempt-row row">
+                    <div className="wd-quiz-detail-detail-attempt-title col-4 text-start text-danger">
+                    {attempts[0] ? <a href={`#/Kanbas/Courses/${cid}/Quizzes/Review/${quizId}/${(attempts[0] as any)._id}`}>Attempt Detail</a>: "N/A"}
+                    </div>
+                    <div
+                        className="wd-quiz-detail-available-date col-4 text-start">{attempts[0] ? formatDate(attempts[0].startTime) : "N/A"}</div>
+                    <div className="wd-quiz-detail-until-date col-4 text-start">{attempts[0] ? attempts[0].grade : "N/A"}</div>
+                </div>
+                <div id="wd-quiz-view-prompt" className="alert alert-dark mt-2 text-center">
+                    {currentUser.role == "FACULTY" && "Note: As a faculty, you can always preview the quiz. But only the last attempt will be listed."}
+                    {currentUser.role == "STUDENT" && "Note: As a student, you can not exceed the attempt limit. Your highest score will be recorded." +
+                        " You can only review your last attempt."}
                 </div>
             </div>
 

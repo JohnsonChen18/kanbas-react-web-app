@@ -90,11 +90,11 @@ export default function FacultyQuizzesScreen() {
                 <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
                 Quiz
             </button>
-            <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                    onClick={() => console.log(quizzes)}>
-                <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
-                show quiz log
-            </button>
+            {/*<button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"*/}
+            {/*        onClick={() => console.log(quizzes)}>*/}
+            {/*    <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>*/}
+            {/*    show quiz log*/}
+            {/*</button>*/}
             <br/><br/><br/>
             <div className="wd-assignments-title p-3 ps-2 bg-secondary d-flex align-items-center">
                 <BsGripVertical className="fs-3"/>

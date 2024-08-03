@@ -29,6 +29,6 @@ const quizSlice = createSlice({
         },
     },
 });
-export const { addQuiz, deleteQuiz, updateQuiz, editAssignment,setQuizzes } =
+export const {addQuiz, deleteQuiz, updateQuiz, editAssignment,setQuizzes } =
     quizSlice.actions;
 export default quizSlice.reducer;

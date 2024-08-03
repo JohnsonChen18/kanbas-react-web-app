@@ -153,25 +153,33 @@ export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) 
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-show-answers">
                     Show Correct Answers
                 </label><br/>
-                <div className="col-3 align-items-center justify-content-start">
-                    <input type="checkbox" id="wd-quiz-show-answers" checked={quiz.showCorrectAnswers}
-                           onChange={(e) => {
-                               setQuiz({...quiz, showCorrectAnswers: e.target.checked});
-                               setShowWhenShowAnswers(e.target.checked)
-                           }}/>
-                </div>
+                <select className="col-9 form-select form-control text-start customized-boarder custom-width w-25"
+                        id="wd-quiz-show-answers"
+                        onChange={(e) => setQuiz({...quiz, showCorrectAnswers: e.target.value})}>
+                    <option selected={quiz.showCorrectAnswers === "NEVER"} value="NEVER">No</option>
+                    <option selected={quiz.showCorrectAnswers === "RIGHT_AFTER"} value="RIGHT_AFTER">Right after quiz</option>
+                    <option selected={quiz.showCorrectAnswers === "SET_TIME"} value="SET_TIME">Set a specific time</option>
+                </select>
+                {/*<div className="col-3 align-items-center justify-content-start">*/}
+                {/*    <input type="checkbox" id="wd-quiz-show-answers" checked={quiz.showCorrectAnswers}*/}
+                {/*           onChange={(e) => {*/}
+                {/*               setQuiz({...quiz, showCorrectAnswers: e.target.checked});*/}
+                {/*               setShowWhenShowAnswers(e.target.checked)*/}
+                {/*           }}/>*/}
+                {/*</div>*/}
             </div>
-            {showWhenShowAnswers && <div className="wd-quiz-when-show-answers-row row mb-4">
+            {quiz.showCorrectAnswers === "SET_TIME" && <div className="wd-quiz-when-show-answers-row row mb-4">
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold"
                        htmlFor="wd-quiz-when-show-answers" style={{textDecoration: 'underline'}}>
                     When to Show Correct Answers
                 </label>
-                <select className="col-9 form-select form-control text-start customized-boarder custom-width w-25"
-                        id="wd-quiz-when-show-answers"
-                        onChange={(e) => setQuiz({...quiz, whenToShowAnswers: e.target.value})}>
-                    <option selected={quiz.whenToShowAnswers === "AFTER_ALL"} value="AFTER_ALL">After all questions</option>
-                    <option selected={quiz.whenToShowAnswers === "AFTER_EACH"} value="AFTER_EACH">After each question</option>
-                </select>
+                <div className="col-6 d-flex align-items-center justify-content-start w-25">
+                    <input className="customized-boarder form-control"
+                           type="datetime-local"
+                           id="wd-quiz-when-show-answers"
+                           value={formatDateTimeLocal(quiz.whenToShowAnswers)}
+                           onChange={(e) => setQuiz({...quiz, whenToShowAnswers: formatToDatabase(e.target.value)})}/>
+                </div>
             </div>}
             <div className="wd-quiz-access-code-row row mb-4">
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-access-code">

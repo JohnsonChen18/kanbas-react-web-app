@@ -7,11 +7,7 @@ import AssignmentEditor from "./Assignments/Editor";
 import {FaAlignJustify} from "react-icons/fa";
 import Grades from "./Grades/Grades";
 import PeopleTable from "./People/Table";
-import PeopleDetails from "./People/Details";
-import QuizzesScreen from "./Quizzes/QuizzesScreen";
-import QuizDetailScreen from "./Quizzes/QuizDetailScreen";
-import QuizEditor from "./Quizzes/QuizEditor";
-import QuizView from "./Quizzes/QuizView";
+import Quizzes from "./Quizzes";
 
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
@@ -35,10 +31,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
                         <Route path="Grades" element={<Grades />} />
                         <Route path="People" element={<PeopleTable />} />
                         <Route path="People/:uid" element={<PeopleTable />} />
-                        <Route path="Quizzes" element={<QuizzesScreen/>} />
-                        <Route path="Quizzes/:quizId" element={<QuizDetailScreen/>} />
-                        <Route path="Quizzes/Editor/:quizId/*" element={<QuizEditor/>} />
-                        <Route path="Quizzes/View/:quizId/*" element={<QuizView/>} />
+                        <Route path="Quizzes/*" element={<Quizzes/>} />
                     </Routes>
                 </div>
             </div>

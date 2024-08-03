@@ -26,7 +26,7 @@ const questionSlice = createSlice({
         },
         updateQuestion: (state, { payload: newQuestion }) => {
             state.questions= state.questions.map((q:any) =>
-                q._id === newQuestion._id ? newQuestion : q
+                q.number === newQuestion.number ? newQuestion : q
             ) as any;
         },
         editAssignment: (state, { payload: assignment }) => {

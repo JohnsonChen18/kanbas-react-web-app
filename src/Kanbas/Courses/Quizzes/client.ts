@@ -5,6 +5,11 @@ export const createQuiz = async (quiz: any) => {
     const response = await axios.post( `${QUIZZES_API}`, quiz);
     return response.data;
 };
+export const findOneQuiz = async (quizId: string) => {
+    const response = await axios
+        .get(`${QUIZZES_API}/${quizId}`);
+    return response.data;
+}
 export const findQuizzesByCourse = async (courseId: string) => {
     const response = await axios
         .get(`${QUIZZES_API}/course/${courseId}`);

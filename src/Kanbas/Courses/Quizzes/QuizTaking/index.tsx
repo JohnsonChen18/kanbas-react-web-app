@@ -3,7 +3,9 @@ import {setQuestions} from "../../Questions/reducer";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Route, Routes, useParams} from "react-router";
-import {Link} from "react-router-dom";
+import * as quizRecordClient from "../QuizRecord/client"
+import accountReducer from "../../../Account/reducer";
+import {createQuizRecord, updateOneQuestionRecord} from "../QuizRecord/reducer";
 
 interface Question {
     title: string;
@@ -12,25 +14,36 @@ interface Question {
     is_correct: boolean;
 }
 
-export default function QuizView() {
+export default function QuizTaking() {
     const {cid, quizId, questionIndex} = useParams();
     const dispatch = useDispatch();
     const {quizzes} = useSelector((state: any) => state.quizReducer);
     const {questions} = useSelector((state: any) => state.questionReducer);
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const [currQuiz, setCurrQuiz] = useState(quizzes.find((quiz: any) => quiz._id === quizId));
     const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
-    const fetchQuestions = async () => {
-        const questions = await questionClient.findQuestionsByQuiz(quizId as string);
-        dispatch(setQuestions([...questions].filter((question: any) => question.deleted == false).sort((a, b) => a.number - b.number)));
-    }
+    const handleSubmitClick = async () => {
+        await quizRecordClient.createQuizRecord(quizRecord, questions);
+    };
+    const createNewQuizRecord = async () => {
+        const userId = currentUser._id;
+        await dispatch(createQuizRecord({questions, quizId, userId}));
+    };
     useEffect(() => {
-        fetchQuestions();
+        const init = async () => {
+            console.log(questions);
+            await createNewQuizRecord();
+        };
+        init();
     }, []);
 
     return (
         <div className="wd-quiz-view-screen">
             <div className="wd-quiz-view-quiz-name">
                 <h2>{currQuiz.name}</h2>
+                <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
+                <div className="btn" onClick={() => console.log(questions)}> show questions</div>
             </div>
             <div id="wd-quiz-view-prompt"
                  className="alert alert-danger mb-4 me-2 fs-4 text-center fs-2">
@@ -47,7 +60,7 @@ export default function QuizView() {
                         </button>}
                 </div>
                 <div className="col-4 d-flex justify-content-center align-items-center">
-                    <button id="wd-quiz-pre-btn" className="btn btn-lg btn-danger mb-2 mb-md-0">
+                    <button id="wd-quiz-pre-btn" className="btn btn-lg btn-danger mb-2 mb-md-0" onClick={handleSubmitClick}>
                         SUBMIT QUIZ
                     </button>
                 </div>
@@ -63,8 +76,9 @@ export default function QuizView() {
                 <div className="wd-quiz-view-jump-row text-start text-danger"><h3>Jump To:</h3></div>
                 {questions.map((question: any, index: number) => (
                     <div className="wd-quiz-view-jump-buttons-row text-start">
-                        <span onClick={()=>setCurrQuestionIndex(index)} style={{color: 'red', cursor: 'pointer', textDecoration: 'underline'}}>
-                            Question {index+1}
+                        <span onClick={() => setCurrQuestionIndex(index)}
+                              style={{color: 'red', cursor: 'pointer', textDecoration: 'underline'}}>
+                            Question {index + 1}
                         </span>
                     </div>
                 ))}
@@ -73,10 +87,52 @@ export default function QuizView() {
     );
 }
 
-function QuestionContainer({question}: { question: any }) {
-    if(question == undefined) return <div>undefined question</div>;
+function QuestionContainer({question}: {
+    question: any,
+}) {
+    const dispatch = useDispatch();
+    const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
+    const questionRecords = quizRecord.questionRecords;
+    const [currRecord, setCurrRecord] = useState<any>({});
+    const saveRecordChange = async  (newRecord: any) => {
+        dispatch(updateOneQuestionRecord(newRecord));
+    };
+
+    const handleTrueClick = async () => {
+        await saveRecordChange({...currRecord, selectedTrueFalse: true});
+        setCurrRecord({...currRecord, selectedTrueFalse: true});
+    };
+    const handleFalseClick = async () => {
+        await saveRecordChange({...currRecord, selectedTrueFalse: false});
+        setCurrRecord({...currRecord, selectedTrueFalse: false});
+    };
+    const handleOptionChange = async (optionNumber:any) => {
+        await saveRecordChange({...currRecord, selectedOptionNumber: optionNumber});
+        setCurrRecord({...currRecord, selectedOptionNumber: optionNumber});
+    };
+    const handleFillInAnswerChange = async (e:any, answerIndex:any) => {
+        const fillInArray = currRecord.fillInBlankAnswers.map((answer:any, index:number)=> index == answerIndex? e.target.value: answer);
+        await saveRecordChange({...currRecord, fillInBlankAnswers: fillInArray});
+        setCurrRecord({...currRecord, fillInBlankAnswers: fillInArray});
+    };
+
+    useEffect(() => {
+        if (question && questionRecords) {
+            const currQuestionRecord = quizRecord.questionRecords.find((record: any) => (record.questionId === question._id));
+            if (currQuestionRecord) {
+                setCurrRecord(currQuestionRecord);
+            }
+        }
+    }, [question]);
+
+
+
+    if (question == undefined) return <div>undefined question</div>;
+    if (currRecord == undefined) return <div>undefined currRecord</div>;
+
     return (
         <div className="wd-quiz-view-content-container container">
+            <a className="btn" onClick={()=>console.log(currRecord)}>show curr question record</a>
             <div className="card">
                 <div className="card-header bg-light fw-bolder">
                     <h3>{question.title && question.title}</h3>
@@ -87,7 +143,8 @@ function QuestionContainer({question}: { question: any }) {
                         <label className="fw-bold ms-2">
                             <input
                                 type="radio"
-                                checked={question.is_correct}
+                                checked={currRecord.selectedTrueFalse == undefined? false: currRecord.selectedTrueFalse}
+                                onChange={handleTrueClick}
                             />
                             &nbsp;True&nbsp;
                         </label></div>}
@@ -95,17 +152,19 @@ function QuestionContainer({question}: { question: any }) {
                         <label className="fw-bold ms-2">
                             <input
                                 type="radio"
-                                checked={!question.is_correct}
+                                checked={currRecord.selectedTrueFalse == undefined? false: !currRecord.selectedTrueFalse}
+                                onChange={handleFalseClick}
                             />
                             &nbsp;False&nbsp;
                         </label></div>}
-                    {question.questionType == "MULTIPLE_CHOICE" && question.options.filter((option:any)=>(option.deleted == false)).map((option:any)=> (
+                    {question.questionType == "MULTIPLE_CHOICE" && question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
                         <div className={`wd-question-choice-${option.number}-row row mb-4`}>
                             <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
                                    htmlFor="wd-quiz-possible-answer">
                                 <input
                                     type="radio"
-                                    checked={option}
+                                    checked={currRecord.selectedOptionNumber? currRecord.selectedOptionNumber == option.number:false}
+                                    onChange={()=>handleOptionChange(option.number)}
                                 />&nbsp;
                                 <div className={`col-6 d-flex align-items-center justify-content-start`}>
                                     {question.options.find((o: any) => o.number == option.number).text || ""}
@@ -113,7 +172,7 @@ function QuestionContainer({question}: { question: any }) {
                             </label>
                         </div>
                     ))}
-                    {question.questionType == "FILL_IN_BLANK" && question.correct_answers.map((answer: any, index:any) => (
+                    {question.questionType == "FILL_IN_BLANK" && question.correct_answers.map((answer: any, index: any) => (
                         <div>
                             <div className={`wd-question-answer-${index}-row row mb-4`}>
                                 <div className="col-1">
@@ -125,7 +184,9 @@ function QuestionContainer({question}: { question: any }) {
                                 <div className="col-6">
                                     <input id="wd-question-answer"
                                            className="form-control customized-boarder w-50 d-flex align-items-center justify-content-start"
-                                           value={""}/>
+                                           value={currRecord.fillInBlankAnswers[index]?currRecord.fillInBlankAnswers[index]:""}
+                                           onChange={(e) => handleFillInAnswerChange(e, index)}
+                                    />
                                 </div>
                             </div>
                         </div>

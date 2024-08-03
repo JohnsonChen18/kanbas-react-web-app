@@ -31,7 +31,7 @@ export default function Profile() {
                     <input className="wd-lastname" value={profile.lastName}
                            onChange={(e) => setProfile({...profile, lastName: e.target.value})}/><br/>
                     <input className="wd-dob" value={profile.dob}
-                           onChange={(e) => setProfile({...profile, dob: e.target.value})} type="date"/><br/>
+                           onChange={(e) => setProfile({...profile, dob: e.target.value})} type="datetime-local"/><br/>
                     <input className="wd-email" value={profile.email}
                            onChange={(e) => setProfile({...profile, email: e.target.value})}/><br/>
                     <select className="wd-role" value={profile.role} onChange={(e) => setProfile({...profile, role: e.target.value})}>

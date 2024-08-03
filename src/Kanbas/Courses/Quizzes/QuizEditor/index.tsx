@@ -88,7 +88,7 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
         dispatch(updateQuiz(quiz));
     };
     const saveQuestions = async (questions:any)=>{
-        questionClient.updateQuestions(questions);
+        await questionClient.updateQuestions(questions);
         dispatch(setQuestions(questions));
     }
     const handleSaveClick = async () => {
@@ -103,14 +103,17 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
     const handleSavePublishClick = () => {
         if (isDisabled) return;
         setIsDisabled(true);
-        setQuiz((prevQuiz:any) => {
-            const updatedQuiz = {...prevQuiz, published: true};
-            saveQuiz(updatedQuiz);  // Call saveQuiz with the updated quiz
-            saveQuestions(questions);
-            return updatedQuiz;
-        });
+        const publishedQuiz = {...quiz, published: true};
+        saveQuiz(publishedQuiz);
+        saveQuestions(questions);
+        // setQuiz((prevQuiz:any) => {
+        //     const updatedQuiz = {...prevQuiz, published: true};
+        //     saveQuiz(updatedQuiz);  // Call saveQuiz with the updated quiz
+        //     saveQuestions(questions);
+        //     return updatedQuiz;
+        // });
         setTimeout(() => {
-            navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}`);
+            navigate(`/Kanbas/Courses/${cid}/Quizzes`);
         }, 500);
     };
     return (

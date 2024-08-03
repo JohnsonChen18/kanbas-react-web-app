@@ -31,7 +31,6 @@ function QuestionsScreen() {
         dispatch(deleteQuestion(questionNumber));
     }
     const handleAddQuestionClick = () => {
-        console.log("called");
         const newNumber = questions.length > 0 ? questions[questions.length - 1].number+1:1;
         const newQuestion = {
             title: "DEFAULT_QUESTION_TITLE",
