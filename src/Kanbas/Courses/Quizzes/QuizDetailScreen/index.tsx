@@ -9,6 +9,7 @@ import * as questionClient from "../../Questions/client";
 import * as quizRecordClient from "../QuizRecord/client";
 import {setQuestions} from "../../Questions/reducer";
 import {findAttemptsForOneQuiz} from "../QuizRecord/client";
+import {useNavigate} from "react-router-dom";
 
 export default function QuizDetailScreen() {
     interface Attempt {
@@ -17,6 +18,7 @@ export default function QuizDetailScreen() {
     }
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {quizId, cid} = useParams();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const {quizzes} = useSelector((state: any) => state.quizReducer);
@@ -24,6 +26,7 @@ export default function QuizDetailScreen() {
     const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const [currQuiz, setCurrQuiz] = useState(quizzes.find((quiz: any) => quiz._id === quizId));
     const [attempts, setAttempts] = useState<[Attempt]>([] as any);
+    const [currAccessCode, setCurrAccessCode] = useState("");
 
     function formatQuizType(input: String) {
         const words = input.toLowerCase().split('_');
@@ -73,6 +76,18 @@ export default function QuizDetailScreen() {
             return 0;
         }));
     }
+    const handleTakeQuizClick = async () => {
+        if(currQuiz.accessCode != "" && currAccessCode != currQuiz.accessCode){
+            alert("Wrong Access Code");
+            return;
+        }
+        if(attempts.length >= currQuiz.maxAttempts){
+            alert("Run out of attempts");
+            return;
+        }
+
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/Taking/${currQuiz._id}`);
+    };
     useEffect(() => {
         fetchQuestions();
         fetchAttempts();
@@ -106,9 +121,16 @@ export default function QuizDetailScreen() {
                     <div className="wd-quiz-detail-student-button-row row">
                         <div className="wd-quiz-detail-student-button col-6">
                             <a id="wd-take-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                               href={`#/Kanbas/Courses/${cid}/Quizzes/new`}>
+                               onClick={handleTakeQuizClick}>
                                 Take Quiz
                             </a>
+                            {currQuiz.accessCode != "" &&
+                                <input className="w-25 float-end me-4 align-items-center mt-2 rounded"
+                                       type="password"
+                                       placeholder="Enter access code"
+                                       value={currAccessCode}
+                                       onChange={(e) => setCurrAccessCode(e.target.value)}
+                                />}
                         </div>
                     </div>}
             </div>
@@ -157,7 +179,10 @@ export default function QuizDetailScreen() {
                 </div>
                 <div className="wd-quiz-detail-access-code row">
                     <div className="col-4 text-end fw-bold">Access Code</div>
-                    <div className="col-6 text-start">{currQuiz.accessCode == "" ? "N/A" : currQuiz.accessCode}</div>
+                    {currentUser.role == "FACULTY" &&
+                        <div className="col-6 text-start">{currQuiz.accessCode == "" ? "N/A" : currQuiz.accessCode}</div>}
+                    {currentUser.role == "STUDENT" &&
+                        <div className="col-6 text-start">{currQuiz.accessCode == "" ? "N/A" : "Required"}</div>}
                 </div>
                 <div className="wd-quiz-detail-one-qeustion row">
                     <div className="col-4 text-end fw-bold">One Question at a Time</div>
@@ -205,7 +230,8 @@ export default function QuizDetailScreen() {
                 <hr/>
                 <div className="wd-quiz-detail-attempt-row row">
                     <div className="wd-quiz-detail-detail-attempt-title col-4 text-start text-danger">
-                    {attempts[0] ? <a href={`#/Kanbas/Courses/${cid}/Quizzes/Review/${quizId}/${(attempts[0] as any)._id}`}>Attempt Detail</a>: "N/A"}
+                        {attempts[0] ?
+                            <a href={`#/Kanbas/Courses/${cid}/Quizzes/Review/${quizId}/${(attempts[0] as any)._id}`}>Attempt {attempts.length}</a> : "N/A"}
                     </div>
                     <div
                         className="wd-quiz-detail-available-date col-4 text-start">{attempts[0] ? formatDate(attempts[0].startTime) : "N/A"}</div>

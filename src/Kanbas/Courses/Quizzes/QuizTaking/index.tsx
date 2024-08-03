@@ -6,6 +6,7 @@ import {Route, Routes, useParams} from "react-router";
 import * as quizRecordClient from "../QuizRecord/client"
 import accountReducer from "../../../Account/reducer";
 import {createQuizRecord, updateOneQuestionRecord} from "../QuizRecord/reducer";
+import {useNavigate} from "react-router-dom";
 
 interface Question {
     title: string;
@@ -15,6 +16,7 @@ interface Question {
 }
 
 export default function QuizTaking() {
+    const navigate = useNavigate();
     const {cid, quizId, questionIndex} = useParams();
     const dispatch = useDispatch();
     const {quizzes} = useSelector((state: any) => state.quizReducer);
@@ -25,6 +27,7 @@ export default function QuizTaking() {
     const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
     const handleSubmitClick = async () => {
         await quizRecordClient.createQuizRecord(quizRecord, questions);
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}`);
     };
     const createNewQuizRecord = async () => {
         const userId = currentUser._id;
@@ -49,7 +52,7 @@ export default function QuizTaking() {
                  className="alert alert-danger mb-4 me-2 fs-4 text-center fs-2">
                 You are currently in preview mode as a faculty
             </div>
-            <QuestionContainer question={questions[currQuestionIndex]}/>
+            <QuestionContainer question={questions[currQuestionIndex]} quiz={currQuiz}/>
             <hr/>
             <div className="wd-quiz-view-buttons-row row mb-4">
                 <div className="col-4">
@@ -87,14 +90,17 @@ export default function QuizTaking() {
     );
 }
 
-function QuestionContainer({question}: {
+
+function QuestionContainer({question, quiz}: {
     question: any,
+    quiz: any,
 }) {
     const dispatch = useDispatch();
     const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const questionRecords = quizRecord.questionRecords;
     const [currRecord, setCurrRecord] = useState<any>({});
-    const saveRecordChange = async  (newRecord: any) => {
+    const [optionArr, setOptionArr] = useState<any[]>([]);
+    const saveRecordChange = async (newRecord: any) => {
         dispatch(updateOneQuestionRecord(newRecord));
     };
 
@@ -106,12 +112,12 @@ function QuestionContainer({question}: {
         await saveRecordChange({...currRecord, selectedTrueFalse: false});
         setCurrRecord({...currRecord, selectedTrueFalse: false});
     };
-    const handleOptionChange = async (optionNumber:any) => {
+    const handleOptionChange = async (optionNumber: any) => {
         await saveRecordChange({...currRecord, selectedOptionNumber: optionNumber});
         setCurrRecord({...currRecord, selectedOptionNumber: optionNumber});
     };
-    const handleFillInAnswerChange = async (e:any, answerIndex:any) => {
-        const fillInArray = currRecord.fillInBlankAnswers.map((answer:any, index:number)=> index == answerIndex? e.target.value: answer);
+    const handleFillInAnswerChange = async (e: any, answerIndex: any) => {
+        const fillInArray = currRecord.fillInBlankAnswers.map((answer: any, index: number) => index == answerIndex ? e.target.value : answer);
         await saveRecordChange({...currRecord, fillInBlankAnswers: fillInArray});
         setCurrRecord({...currRecord, fillInBlankAnswers: fillInArray});
     };
@@ -123,8 +129,7 @@ function QuestionContainer({question}: {
                 setCurrRecord(currQuestionRecord);
             }
         }
-    }, [question]);
-
+    }, [question, quiz]);
 
 
     if (question == undefined) return <div>undefined question</div>;
@@ -132,7 +137,8 @@ function QuestionContainer({question}: {
 
     return (
         <div className="wd-quiz-view-content-container container">
-            <a className="btn" onClick={()=>console.log(currRecord)}>show curr question record</a>
+            <a className="btn" onClick={() => console.log(currRecord)}>show curr question record</a>
+            <a className="btn" onClick={() => console.log(optionArr)}>show optionarr</a>
             <div className="card">
                 <div className="card-header bg-light fw-bolder">
                     <h3>{question.title && question.title}</h3>
@@ -143,7 +149,7 @@ function QuestionContainer({question}: {
                         <label className="fw-bold ms-2">
                             <input
                                 type="radio"
-                                checked={currRecord.selectedTrueFalse == undefined? false: currRecord.selectedTrueFalse}
+                                checked={currRecord.selectedTrueFalse == undefined ? false : currRecord.selectedTrueFalse}
                                 onChange={handleTrueClick}
                             />
                             &nbsp;True&nbsp;
@@ -152,26 +158,43 @@ function QuestionContainer({question}: {
                         <label className="fw-bold ms-2">
                             <input
                                 type="radio"
-                                checked={currRecord.selectedTrueFalse == undefined? false: !currRecord.selectedTrueFalse}
+                                checked={currRecord.selectedTrueFalse == undefined ? false : !currRecord.selectedTrueFalse}
                                 onChange={handleFalseClick}
                             />
                             &nbsp;False&nbsp;
                         </label></div>}
-                    {question.questionType == "MULTIPLE_CHOICE" && question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
-                        <div className={`wd-question-choice-${option.number}-row row mb-4`}>
-                            <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
-                                   htmlFor="wd-quiz-possible-answer">
-                                <input
-                                    type="radio"
-                                    checked={currRecord.selectedOptionNumber? currRecord.selectedOptionNumber == option.number:false}
-                                    onChange={()=>handleOptionChange(option.number)}
-                                />&nbsp;
-                                <div className={`col-6 d-flex align-items-center justify-content-start`}>
-                                    {question.options.find((o: any) => o.number == option.number).text || ""}
-                                </div>
-                            </label>
-                        </div>
-                    ))}
+                    {question.questionType == "MULTIPLE_CHOICE" && quiz.shuffleAnswers &&
+                        question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
+                            <div className={`wd-question-choice-${option.number}-row row mb-4`}>
+                                <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
+                                       htmlFor="wd-quiz-possible-answer">
+                                    <input
+                                        type="radio"
+                                        checked={currRecord.selectedOptionNumber ? currRecord.selectedOptionNumber == option.number : false}
+                                        onChange={() => handleOptionChange(option.number)}
+                                    />&nbsp;
+                                    <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                                        {question.options.find((o: any) => o.number == option.number).text || ""}
+                                    </div>
+                                </label>
+                            </div>
+                        ))}
+                    {question.questionType == "MULTIPLE_CHOICE" && !quiz.shuffleAnswers &&
+                        question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
+                            <div className={`wd-question-choice-${option.number}-row row mb-4`}>
+                                <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
+                                       htmlFor="wd-quiz-possible-answer">
+                                    <input
+                                        type="radio"
+                                        checked={currRecord.selectedOptionNumber ? currRecord.selectedOptionNumber == option.number : false}
+                                        onChange={() => handleOptionChange(option.number)}
+                                    />&nbsp;
+                                    <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                                        {question.options.find((o: any) => o.number == option.number).text || ""}
+                                    </div>
+                                </label>
+                            </div>
+                        ))}
                     {question.questionType == "FILL_IN_BLANK" && question.correct_answers.map((answer: any, index: any) => (
                         <div>
                             <div className={`wd-question-answer-${index}-row row mb-4`}>
@@ -184,7 +207,7 @@ function QuestionContainer({question}: {
                                 <div className="col-6">
                                     <input id="wd-question-answer"
                                            className="form-control customized-boarder w-50 d-flex align-items-center justify-content-start"
-                                           value={currRecord.fillInBlankAnswers[index]?currRecord.fillInBlankAnswers[index]:""}
+                                           value={currRecord.fillInBlankAnswers[index] ? currRecord.fillInBlankAnswers[index] : ""}
                                            onChange={(e) => handleFillInAnswerChange(e, index)}
                                     />
                                 </div>

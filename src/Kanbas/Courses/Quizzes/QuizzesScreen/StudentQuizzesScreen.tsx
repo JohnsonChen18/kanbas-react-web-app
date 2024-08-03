@@ -48,7 +48,7 @@ export default function StudentQuizzesScreen(){
                 <div className="flex-grow-1 fw-bold">{`QUIZZES (${quizzes.length})`}</div>
             </div>
             <ul className="wd-quizzes-list list-group rounded-0">
-                {quizzes.map((quiz: any) => (
+                {quizzes.filter((quiz:any)=> quiz.published).map((quiz: any) => (
                     <li className="wd-quiz-list-item d-flex align-items-center list-group-item p-3 ps-1">
                         <div className="wd-quiz-icon-left me-2 fs-3">
                             <MdOutlineAssignment className="text-success"/>
