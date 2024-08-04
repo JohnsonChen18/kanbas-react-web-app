@@ -171,7 +171,12 @@ function QuestionContainer({question, quiz}: {
                     <h3>{question.title && question.title}</h3>
                 </div>
                 <div className="card-body">
-                    <p className="mb-5">{question.text && question.text}</p>
+                    <p className="mb-5">
+                        <div
+                            dangerouslySetInnerHTML={{__html: question.text}}
+                        />
+                        {/*{question.text && question.text}*/}
+                    </p>
                     {question.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-2">
                         <label className="fw-bold ms-2">
                             <input

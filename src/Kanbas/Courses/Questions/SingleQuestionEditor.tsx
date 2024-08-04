@@ -3,6 +3,7 @@ import React, {useEffect, useReducer, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {updateQuestion} from "./reducer";
 import {useNavigate} from "react-router-dom";
+import ReactQuill from "react-quill";
 
 export default function SingleQuestionEditor() {
     const {cid, quizId, questionNumber} = useParams();
@@ -153,13 +154,18 @@ export default function SingleQuestionEditor() {
                     </div>
                 </div>
                 <div className="wd-question-text-row row mb-4">
-                    <label className="col-3 d-flex align-items-baseline justify-content-end fw-bold mt-2" htmlFor="wd-question-text">
+                    <label className="col-3 d-flex align-items-baseline justify-content-end fw-bold" htmlFor="wd-question-text">
                         Question Text
                     </label>
-                    <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
-                              style={{height: '200px', border: '1px solid transparent'}} readOnly>
-                        {currQuestion.text}
-                    </textarea>
+                    <div
+                        className="col-6 border-black rounded"
+                        style={{border: '1px solid transparent', minHeight: '75px'}}
+                        dangerouslySetInnerHTML={{__html: currQuestion.text}}
+                    />
+                    {/*<textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"*/}
+                    {/*          style={{height: '200px', border: '1px solid transparent'}} readOnly>*/}
+                    {/*    {currQuestion.text}*/}
+                    {/*</textarea>*/}
                 </div>
                 <div className="wd-question-answer-row row">
                     <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
@@ -199,7 +205,7 @@ export default function SingleQuestionEditor() {
                                    htmlFor="wd-quiz-possible-answer">
                                 Option:&nbsp;
                                 <div className={`col-6 d-flex align-items-center justify-content-start 
-                                ${currQuestion.correctOptionNumber == option.number? "bg-success": "bg-secondary"}`}>
+                                ${currQuestion.correctOptionNumber == option.number ? "bg-success" : "bg-secondary"}`}>
                                     {currQuestion.options.find((o: any) => o.number == option.number).text || ""}
                                 </div>
                             </label>
@@ -214,7 +220,7 @@ export default function SingleQuestionEditor() {
                             </div>
                         </label>
                     </div>
-                    ))}
+                ))}
                 <hr/>
                 <div className="wd-question-buttons-row col-7 mb-4">
                     <button id="wd-save-quiz-btn" className="btn btn-lg btn-danger mb-2 me-2 mb-md-0 float-end"
@@ -292,14 +298,24 @@ export default function SingleQuestionEditor() {
                 <label className="col-3 d-flex align-items-baseline justify-content-end fw-bold" htmlFor="wd-question-text">
                     Question Text
                 </label>
-                {mode == "EDIT" && <textarea id="wd-question-text"
-                                             className="w-50 col-9 form-control customized-boarder justify-content-start"
-                                             style={{height: '200px'}}
-                                             onChange={(e) => setCurrQuestion({...currQuestion, text: e.target.value})}>
-                {currQuestion.text}
-                </textarea>}
+                {mode == "EDIT" &&
+                    <div className="w-50 col-9">
+                        <ReactQuill
+                            value={currQuestion.text}
+                            onChange={(content) => setCurrQuestion({...currQuestion, text: content})}
+                            style={{height: '150px'}}
+                            className="border-black"
+                        />
+                    </div>
+                    // <textarea id="wd-question-text"
+                    //           className="w-50 col-9 form-control customized-boarder justify-content-start"
+                    //           style={{height: '200px'}}
+                    //           onChange={(e) => setCurrQuestion({...currQuestion, text: e.target.value})}>
+                    // {currQuestion.text}
+                    // </textarea>
+                }
             </div>
-            <div className="wd-question-answer-row row">
+            <div className="wd-question-answer-row row mt-5">
                 <label className="col-3 d-flex align-items-center justify-content-end fw-bold" htmlFor="wd-quiz-name">
                     Answers:
                 </label>

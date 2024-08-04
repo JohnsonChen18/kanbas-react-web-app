@@ -4,8 +4,10 @@ import {useParams} from "react-router";
 import * as client from "../client";
 import {useDispatch} from "react-redux";
 import {updateQuiz} from "../reducer";
+import 'react-quill/dist/quill.snow.css';
 import * as questionClient from "../../Questions/client";
 import {setQuestions} from "../../Questions/reducer";
+import ReactQuill from "react-quill";
 
 export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
     const navigate = useNavigate();
@@ -78,17 +80,25 @@ export default function DetailTab({quiz, setQuiz}: { quiz: any, setQuiz: any }) 
                        value={quiz.name}
                        onChange={(e) => setQuiz({...quiz, name: e.target.value})}/>
             </div>
-            <div className="wd-quiz-description-row row mb-4">
+            <div className="wd-quiz-description-row row mb-5">
                 <label className="col-3 d-flex align-items-baseline justify-content-end fw-bold" htmlFor="wd-quiz-name">
                     Quiz Description
                 </label>
-                <textarea id="wd-quiz-description" className="w-50 col-9 form-control customized-boarder justify-content-start"
-                          style={{height: '200px'}}
-                          onChange={(e) => setQuiz({...quiz, description: e.target.value})}>
-                {quiz.description}
-                </textarea>
+                <div className="w-50 col-9">
+                    <ReactQuill
+                        value={quiz.description}
+                        onChange={(content) => setQuiz({...quiz, description: content})}
+                        style={{height: '150px'}}
+                        className="border-black"
+                    />
+                </div>
+                {/*<textarea id="wd-quiz-description" className="w-50 col-9 form-control customized-boarder justify-content-start"*/}
+                {/*          style={{height: '200px'}}*/}
+                {/*          onChange={(e) => setQuiz({...quiz, description: e.target.value})}>*/}
+                {/*{quiz.description}*/}
+                {/*</textarea>*/}
             </div>
-            <div className="wd-quiz-type-row row mb-4">
+            <div className="wd-quiz-type-row row mt-2 mb-4">
                 <label className="form-label col-3 text-end pt-2 fw-bold" htmlFor="wd-quiz-type">Quiz Type</label>
                 <select className="col-9 form-select form-control text-start customized-boarder custom-width w-25" id="wd-quiz-type"
                         onChange={(e) => setQuiz({...quiz, quizType: e.target.value})}>

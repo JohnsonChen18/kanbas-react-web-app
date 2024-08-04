@@ -78,7 +78,12 @@ function QuestionContent({question, questionRecord, currQuiz}: { question: any, 
                     <h6 className="float-end">{`Score: ${questionRecord.grade} of ${question.points}`}</h6>
                 </div>
                 <div className="card-body">
-                <p className="mb-5">{question.text && question.text}</p>
+                    <p className="mb-5">
+                        <div
+                            dangerouslySetInnerHTML={{__html: question.text}}
+                        />
+                        {/*{question.text && question.text}*/}
+                    </p>
                     <hr/>
                     <div className="mb-2 fw-bold">Your Answer:</div>
                     {question.questionType == "TRUE_FALSE" && <div className="wd-question-answer-true-row row mb-2">

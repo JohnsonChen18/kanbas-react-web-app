@@ -10,6 +10,7 @@ import * as quizRecordClient from "../QuizRecord/client";
 import {setQuestions} from "../../Questions/reducer";
 import {findAttemptsForOneQuiz} from "../QuizRecord/client";
 import {useNavigate} from "react-router-dom";
+import ReactQuill from "react-quill";
 
 export default function QuizDetailScreen() {
     interface Attempt {
@@ -196,19 +197,23 @@ export default function QuizDetailScreen() {
                     <div className="col-4 text-end fw-bold">Lock Questions After Answering</div>
                     <div className="col-6 text-start">{currQuiz.lockQuestion ? "Yes" : "No"}</div>
                 </div>
-                <div className="wd-quiz-detail-description row">
-                    <div className="col-4 text-end fw-bold mt-2">Description</div>
-                    {/*<div className="col-6 text-start overflow-auto">{currQuiz.description}</div>*/}
-                    <textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"
-                              style={{height: '75px', border: '1px solid transparent'}} readOnly>
-                        {currQuiz.description}
-                    </textarea>
+                <div className="wd-quiz-detail-description row mt-2">
+                    <div className="col-4 text-end fw-bold">Description</div>
+                    <div
+                        className="col-6 border-black rounded"
+                        style={{border: '1px solid transparent', minHeight: '75px'}}
+                        dangerouslySetInnerHTML={{__html: currQuiz.description}}
+                    />
+                    {/*<textarea id="wd-quiz-description" className="w-50 col-6 form-control justify-content-start"*/}
+                    {/*          style={{height: '75px', border: '1px solid transparent'}} readOnly>*/}
+                    {/*    {currQuiz.description}*/}
+                    {/*</textarea>*/}
                 </div>
             </div>
             <br/>
             <div className="wd-quiz-detail-time d-grid mb-5">
                 <div className="wd-quiz-detail-time-title-row row">
-                    <div className="wd-quiz-detail-due-date col-4 fw-bolder text-start">Due date</div>
+                <div className="wd-quiz-detail-due-date col-4 fw-bolder text-start">Due date</div>
                     <div className="wd-quiz-detail-available-date col-4 fw-bolder text-start">Available date</div>
                     <div className="wd-quiz-detail-until-date col-4 fw-bolder text-start">Until date</div>
                 </div>
