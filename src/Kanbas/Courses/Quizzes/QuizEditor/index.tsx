@@ -88,10 +88,21 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
         dispatch(updateQuiz(quiz));
     };
     const saveQuestions = async (questions:any)=>{
-        await questionClient.updateQuestions(questions);
+        // await questionClient.updateQuestions(questions);
+        for (const question of questions) {
+            if (question._id == undefined) {
+                await questionClient.createQuestion(question);
+            } else {
+                await questionClient.updateOneQuestion(question);
+            }
+        }
         dispatch(setQuestions(questions));
     }
     const handleSaveClick = async () => {
+        if(questionCount == 0){
+            alert("Any quiz should have at least one question")
+            return;
+        }
         if (quiz.lockQuestion == true && quiz.oneQuestionLimit==false){
             alert("If you want to enable Lock Questions After Answering, you have to also enable One Question at a Time")
             return;
@@ -105,6 +116,10 @@ function ControlButtons({quiz, setQuiz}: { quiz: any, setQuiz: any }) {
         }, 500);
     };
     const handleSavePublishClick = () => {
+        if(questionCount == 0){
+            alert("Any quiz should have at least one question")
+            return;
+        }
         if (quiz.lockQuestion == true && quiz.oneQuestionLimit==false){
             alert("If you want to enable Lock Questions After Answering, you have to also enable One Question at a Time")
             return;

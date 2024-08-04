@@ -6,9 +6,13 @@ import {FaCheckCircle} from "react-icons/fa";
 import {AiOutlineStop} from "react-icons/ai";
 import {useSelector} from "react-redux";
 import {useParams} from "react-router";
+import {useEffect, useState} from "react";
+import * as quizRecordClient from "../QuizRecord/client";
 
 export default function StudentQuizzesScreen(){
     const {quizzes} = useSelector((state: any) => state.quizReducer);
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const [scoreArr, setScoreArr] = useState( [] as any);
     const {cid} = useParams();
     function formatDate(isoString: string): string {
         const date = new Date(isoString);
@@ -34,6 +38,39 @@ export default function StudentQuizzesScreen(){
 
         return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
     }
+
+    // const fetchAttempts = async () => {
+    //     const attempts = await quizRecordClient.findAttemptsForOneQuiz(currentUser._id as string, quizId as string);
+    //     await setAttempts(attempts.sort((a: any, b: any) => {
+    //         const dateA = new Date(a.startTime);
+    //         const dateB = new Date(b.startTime);
+    //
+    //         if (dateA > dateB) return -1;
+    //         if (dateA < dateB) return 1;
+    //         return 0;
+    //     }));
+    // }
+    useEffect(() => {
+        const fetchAttempts = async () => {
+            const attempts = await Promise.all(quizzes.filter((quiz:any)=> quiz.published).map(async (quiz: any) => {
+                const attempts = await quizRecordClient.findAttemptsForOneQuiz(currentUser._id as string, quiz._id as string);
+                attempts.sort((a: any, b: any) => {
+                    const dateA = new Date(a.startTime);
+                    const dateB = new Date(b.startTime);
+
+                    if (dateA > dateB) return -1;
+                    if (dateA < dateB) return 1;
+                    return 0;
+                });
+                return attempts[0] ? attempts[0] : undefined;
+            }));
+            setScoreArr(attempts);
+        };
+
+        fetchAttempts();
+    }, [quizzes]);
+
+
     return (
         <div className="wd-quiz-screen-faculty">
             <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
@@ -45,10 +82,10 @@ export default function StudentQuizzesScreen(){
             <div className="wd-assignments-title p-3 ps-2 bg-secondary d-flex align-items-center">
                 <BsGripVertical className="fs-3"/>
                 <IoMdArrowDropdown className="me-2 fs-4"/>
-                <div className="flex-grow-1 fw-bold">{`QUIZZES (${quizzes.length})`}</div>
+                <div className="flex-grow-1 fw-bold">{`QUIZZES (${quizzes.filter((quiz:any)=> quiz.published == true).length})`}</div>
             </div>
             <ul className="wd-quizzes-list list-group rounded-0">
-                {quizzes.filter((quiz:any)=> quiz.published).map((quiz: any) => (
+                {quizzes.filter((quiz:any)=> quiz.published).map((quiz: any, index:number) => (
                     <li className="wd-quiz-list-item d-flex align-items-center list-group-item p-3 ps-1">
                         <div className="wd-quiz-icon-left me-2 fs-3">
                             <MdOutlineAssignment className="text-success"/>
@@ -86,6 +123,10 @@ export default function StudentQuizzesScreen(){
                             &nbsp;|&nbsp;
                             <span className="wd-assignment-list-item-question-count ">
                                 {quiz.questionCount}<span className="fw-bolder"> Questions</span>
+                            </span>
+                            &nbsp;|&nbsp;
+                            <span className="wd-assignment-list-item-score ">
+                                <span className="fw-bolder">Score: </span>{scoreArr[index]? scoreArr[index].grade: "N/A"}
                             </span>
                         </div>
                     </li>

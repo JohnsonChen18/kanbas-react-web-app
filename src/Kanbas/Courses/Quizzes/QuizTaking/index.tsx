@@ -167,7 +167,7 @@ function QuestionContainer({question, quiz}: {
             }
             setLoading(false);
         }
-    }, [question, quiz]);
+    }, [question, quiz,quizRecord.questionRecords]);
 
     useEffect( () => {
         setShuffled(false);
@@ -175,7 +175,7 @@ function QuestionContainer({question, quiz}: {
 
     if (loading) return <div>Loading...</div>;
     if (currRecord == undefined) return <div>undefined currRecord</div>;
-    if (currRecord.fillInBlankAnswers == undefined) return <div>undefined question</div>;
+    // if (currRecord.fillInBlankAnswers == undefined) return <div>undefined question</div>;
 
     return (
         <div className="wd-quiz-view-content-container container">
@@ -255,7 +255,7 @@ function QuestionContainer({question, quiz}: {
                                 <div className="col-6">
                                     <input id="wd-question-answer"
                                            className="form-control customized-boarder w-50 d-flex align-items-center justify-content-start"
-                                           value={currRecord.fillInBlankAnswers[index] ? currRecord.fillInBlankAnswers[index] : ""}
+                                           value={currRecord.fillInBlankAnswers && currRecord.fillInBlankAnswers[index] ? currRecord.fillInBlankAnswers[index] : ""}
                                            onChange={(e) => handleFillInAnswerChange(e, index)}
                                     />
                                 </div>
