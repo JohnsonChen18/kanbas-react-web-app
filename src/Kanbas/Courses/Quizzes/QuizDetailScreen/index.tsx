@@ -86,6 +86,14 @@ export default function QuizDetailScreen() {
             alert("Run out of attempts");
             return;
         }
+        if(new Date() <= new Date(currQuiz.availableDate)) {
+            alert("Quiz is not available yet. Please check the availableDate");
+            return;
+        }
+        if(new Date() >= new Date(currQuiz.dueDate)) {
+            alert("Quiz is pass due. Attempt is not allowed");
+            return;
+        }
 
         navigate(`/Kanbas/Courses/${cid}/Quizzes/Taking/${currQuiz._id}`);
     };

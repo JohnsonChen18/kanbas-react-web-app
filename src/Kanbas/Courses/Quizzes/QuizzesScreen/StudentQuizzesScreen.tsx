@@ -8,8 +8,10 @@ import {useSelector} from "react-redux";
 import {useParams} from "react-router";
 import {useEffect, useState} from "react";
 import * as quizRecordClient from "../QuizRecord/client";
+import {useNavigate} from "react-router-dom";
 
 export default function StudentQuizzesScreen(){
+    const navigate = useNavigate();
     const {quizzes} = useSelector((state: any) => state.quizReducer);
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [scoreArr, setScoreArr] = useState( [] as any);
@@ -38,6 +40,13 @@ export default function StudentQuizzesScreen(){
 
         return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
     }
+    const handleQuizNameClick = async (quiz:any) => {
+        if(new Date() >= new Date(quiz.untilDate)) {
+            alert("Quiz is closed. You cant view it anymore.")
+            return;
+        }
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`);
+    };
 
     // const fetchAttempts = async () => {
     //     const attempts = await quizRecordClient.findAttemptsForOneQuiz(currentUser._id as string, quizId as string);
@@ -92,7 +101,10 @@ export default function StudentQuizzesScreen(){
                         </div>
                         <div className="flex-grow-1">
                             <a className="wd-assignment-link"
-                               href={`#/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}>
+                               onClick={()=>handleQuizNameClick(quiz)}
+                               style={{ cursor: 'pointer' }}
+                               // href={`#/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}
+                            >
                                 {quiz.name}
                             </a>
                             <br/>
