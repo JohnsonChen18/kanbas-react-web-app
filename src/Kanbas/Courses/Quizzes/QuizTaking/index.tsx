@@ -39,7 +39,6 @@ export default function QuizTaking() {
 
     useEffect(() => {
         const init = async () => {
-            console.log(questions);
             await createNewQuizRecord();
         };
         init();
@@ -126,6 +125,7 @@ function QuestionContainer({question, quiz}: {
     const [currRecord, setCurrRecord] = useState<any>({});
     const [optionArr, setOptionArr] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [shuffled, setShuffled] = useState(false);
     const saveRecordChange = async (newRecord: any) => {
         dispatch(updateOneQuestionRecord(newRecord));
     };
@@ -147,16 +147,31 @@ function QuestionContainer({question, quiz}: {
         await saveRecordChange({...currRecord, fillInBlankAnswers: fillInArray});
         setCurrRecord({...currRecord, fillInBlankAnswers: fillInArray});
     };
-
+    const shuffleArray = (array:any[]) => {
+        let newArray = array.slice();
+        newArray.sort(() => Math.random() - 0.5);
+        return newArray;
+    };
     useEffect(() => {
         if (question && quizRecord.questionRecords) {
             const currQuestionRecord = quizRecord.questionRecords.find((record: any) => record.questionId === question._id);
+
+            if(quiz.shuffleAnswers && !shuffled){
+                console.log(question.options);
+                setOptionArr(shuffleArray(question.options));
+                setShuffled(true);
+            }
+
             if (currQuestionRecord) {
                 setCurrRecord(currQuestionRecord);
             }
             setLoading(false);
         }
-    }, [question, quiz, quizRecord.questionRecords]);
+    }, [question, quiz]);
+
+    useEffect( () => {
+        setShuffled(false);
+    }, [question._id]);
 
     if (loading) return <div>Loading...</div>;
     if (currRecord == undefined) return <div>undefined currRecord</div>;
@@ -165,7 +180,7 @@ function QuestionContainer({question, quiz}: {
     return (
         <div className="wd-quiz-view-content-container container">
             <a className="btn" onClick={() => console.log(currRecord)}>show curr question record</a>
-            <a className="btn" onClick={() => console.log(optionArr)}>show optionarr</a>
+            <a className="btn" onClick={() => console.log(shuffled)}>show optionarr</a>
             <div className="card">
                 <div className="card-header bg-light fw-bolder">
                     <h3>{question.title && question.title}</h3>
@@ -196,7 +211,7 @@ function QuestionContainer({question, quiz}: {
                             &nbsp;False&nbsp;
                         </label></div>}
                     {question.questionType == "MULTIPLE_CHOICE" && quiz.shuffleAnswers &&
-                        question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
+                       optionArr.filter((option: any) => (option.deleted == false)).map((option: any) => (
                             <div className={`wd-question-choice-${option.number}-row row mb-4`}>
                                 <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
                                        htmlFor="wd-quiz-possible-answer">
@@ -206,13 +221,14 @@ function QuestionContainer({question, quiz}: {
                                         onChange={() => handleOptionChange(option.number)}
                                     />&nbsp;
                                     <div className={`col-6 d-flex align-items-center justify-content-start`}>
-                                        {question.options.find((o: any) => o.number == option.number).text || ""}
+                                        {question.options.find((o: any) => o.number == option.number) &&
+                                            question.options.find((o: any) => o.number == option.number).text || ""}
                                     </div>
                                 </label>
                             </div>
                         ))}
                     {question.questionType == "MULTIPLE_CHOICE" && !quiz.shuffleAnswers &&
-                        question.options.filter((option: any) => (option.deleted == false)).map((option: any) => (
+                        question.options.filter((option: any) => (option.deleted == false)).sort((a:any, b:any) => a.number - b.number).map((option: any) => (
                             <div className={`wd-question-choice-${option.number}-row row mb-4`}>
                                 <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
                                        htmlFor="wd-quiz-possible-answer">
