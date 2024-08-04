@@ -69,6 +69,12 @@ export default function TOC() {
                     Render Server Root(a6)
                 </a>
             </li>
+            <li className="nav-item">
+                <a id="wd-k" href="https://kanbas-node-server-app-project-ffdd.onrender.com"
+                   className="nav-link text-decoration-underline">
+                    Render Server Root(project)
+                </a>
+            </li>
         </ul>
     );
 }

@@ -61,6 +61,30 @@ function QuestionContent({question, questionRecord, currQuiz}: { question: any, 
     const {quizRecord} = useSelector((state: any) => state.quizRecordReducer);
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [currQuestionRecord, setCurrQuestionRecord] = useState(questionRecord);
+    function formatDate(isoString: string): string {
+        const date = new Date(isoString);
+
+        if (isNaN(date.getTime())) {
+            throw new Error("Invalid date string");
+        }
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        const year = date.getFullYear();
+        const month = months[date.getMonth()];
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        // Format hours to 12-hour format
+        const hours12 = hours % 12 || 12;
+        const ampm = hours >= 12 ? 'pm' : 'am';
+
+        // Pad minutes with leading zero if needed
+        const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+        return `${year} ${month} ${day} at ${hours12}:${paddedMinutes}${ampm}`;
+    }
     useEffect(() => {
         setCurrQuestionRecord(questionRecord);
     }, [questionRecord]);
@@ -138,6 +162,8 @@ function QuestionContent({question, questionRecord, currQuiz}: { question: any, 
                     ))}
                     <hr/>
                     {currentUser.role == "FACULTY" && <CorrectAnswersComponent question={question}/>}
+                    {currentUser.role == "STUDENT" && currQuiz.showCorrectAnswers == "SET_TIME" && new Date() <= new Date(currQuiz.whenToShowAnswers) &&
+                        <div className="text-danger">Answer will be available at {formatDate(currQuiz.whenToShowAnswers)}</div>}
                     {currentUser.role == "STUDENT" && currQuiz.showCorrectAnswers != "NEVER" &&
                         (currQuiz.showCorrectAnswers == "RIGHT_AFTER" || new Date() >= new Date(currQuiz.whenToShowAnswers)) &&
                         <CorrectAnswersComponent question={question}/>}
