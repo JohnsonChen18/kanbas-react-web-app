@@ -63,12 +63,13 @@ export default function QuizTaking() {
         <div className="wd-quiz-view-screen">
             <div className="wd-quiz-view-quiz-name">
                 <h2>{currQuiz.name}</h2>
-                <div>{timeLeft}</div>
+                <h3><div className="text-danger">{`Time Left: ${Math.floor(timeLeft / 60)} Min ${timeLeft%60} Sec`}</div></h3>
                 <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
                 <div className="btn" onClick={() => console.log(questions)}> show questions</div>
             </div>
-            {currentUser.role == "FACULTY" && <div id="wd-quiz-view-prompt" className="alert alert-danger mb-2 me-2 fs-4 text-center fs-2">
-                You are currently in preview mode as a faculty
+            {currentUser.role == "FACULTY" && <div id="wd-quiz-view-prompt" className="alert alert-danger mb-2 me-2 fs-6 text-center">
+                You are currently in preview mode as a faculty. To edit, click &nbsp;
+                <a href={`#/Kanbas/Courses/${cid}/Quizzes/Editor/${currQuiz._id}/Details`}>EDIT</a>
             </div>}
             {currQuiz.lockQuestion && <div id="wd-quiz-view-prompt" className="alert alert-secondary mb-2 me-2 text-center fs-5">
                 Question Lock is activated. You can't go back to previous questions.
