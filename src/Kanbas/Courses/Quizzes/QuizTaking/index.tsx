@@ -167,7 +167,7 @@ function QuestionContainer({question, quiz}: {
             }
             setLoading(false);
         }
-    }, [question, quiz,quizRecord.questionRecords]);
+    }, [question, quiz, quizRecord.questionRecords, shuffled]);
 
     useEffect( () => {
         setShuffled(false);
@@ -178,7 +178,7 @@ function QuestionContainer({question, quiz}: {
     // if (currRecord.fillInBlankAnswers == undefined) return <div>undefined question</div>;
 
     return (
-        <div className="wd-quiz-view-content-container container">
+        <div className="wd-quiz-view-content-container container mb-4">
             {/*<a className="btn" onClick={() => console.log(currRecord)}>show curr question record</a>*/}
             {/*<a className="btn" onClick={() => console.log(shuffled)}>show optionarr</a>*/}
             <div className="card">
