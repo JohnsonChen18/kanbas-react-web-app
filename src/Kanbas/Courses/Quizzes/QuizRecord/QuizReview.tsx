@@ -38,9 +38,9 @@ export default function QuizReview() {
 
     return (
         <div className="wd-quiz-review">
-            <div className="btn" onClick={() => console.log(currQuiz)}> show curr quiz</div>
-            <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
-            <div className="btn" onClick={() => console.log(questions)}> show questions</div>
+            {/*<div className="btn" onClick={() => console.log(currQuiz)}> show curr quiz</div>*/}
+            {/*<div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>*/}
+            {/*<div className="btn" onClick={() => console.log(questions)}> show questions</div>*/}
             <div className="wd-quiz-review-quiz-name row">
                 <h2 className="col-6 text-start">{currQuiz.name}</h2>
                 <h2 className="col-6 text-end">{`Score: ${quizRecord.grade} of ${currQuiz.points} `}</h2>
@@ -93,7 +93,7 @@ function QuestionContent({question, questionRecord, currQuiz}: { question: any, 
 
     return (
         <div className="wd-quiz-view-content-container container">
-            <a className="btn" onClick={() => console.log(currQuestionRecord)}>show curr question record</a>
+            {/*<a className="btn" onClick={() => console.log(currQuestionRecord)}>show curr question record</a>*/}
             <div className="card">
                 <div className={`card-header fw-bolder ${questionRecord.grade == question.points? "bg-success":"bg-danger"} bg-opacity-25`}>
                     <h3 className="float-start">
@@ -135,9 +135,9 @@ function QuestionContent({question, questionRecord, currQuiz}: { question: any, 
                                     checked={currQuestionRecord.selectedOptionNumber ? currQuestionRecord.selectedOptionNumber == option.number : false}
 
                                 />&nbsp;
-                                <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                                <textarea readOnly={true} className={`col-6 d-flex align-items-center justify-content-start rounded`}>
                                     {question.options.find((o: any) => o.number == option.number).text || ""}
-                                </div>
+                                </textarea>
                             </label>
                         </div>
                     ))}
@@ -185,9 +185,9 @@ function CorrectAnswersComponent({question}: { question: any}) {
                 <div className={`wd-question-choice-${option.number}-row row mb-4`}>
                     <label className="col-6 d-flex align-items-center justify-content-start ms-2"
                            htmlFor="wd-quiz-possible-answer">
-                        <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                        <textarea readOnly={true} className={`col-6 d-flex align-items-center justify-content-start rounded`}>
                             {question.options.find((o: any) => o.number == option.number).text || ""}
-                        </div>
+                        </textarea>
                     </label>
                 </div>
             ))}

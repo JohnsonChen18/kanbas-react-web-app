@@ -63,8 +63,8 @@ export default function QuizTaking() {
             <div className="wd-quiz-view-quiz-name">
                 <h2>{currQuiz.name}</h2>
                 <h3><div className="text-danger">{`Time Left: ${Math.floor(timeLeft / 60)} Min ${timeLeft%60} Sec`}</div></h3>
-                <div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>
-                <div className="btn" onClick={() => console.log(questions)}> show questions</div>
+                {/*<div className="btn" onClick={() => console.log(quizRecord)}> show quiz record</div>*/}
+                {/*<div className="btn" onClick={() => console.log(questions)}> show questions</div>*/}
             </div>
             {currentUser.role == "FACULTY" && <div id="wd-quiz-view-prompt" className="alert alert-danger mb-2 me-2 fs-6 text-center">
                 You are currently in preview mode as a faculty. To edit, click &nbsp;
@@ -179,8 +179,8 @@ function QuestionContainer({question, quiz}: {
 
     return (
         <div className="wd-quiz-view-content-container container">
-            <a className="btn" onClick={() => console.log(currRecord)}>show curr question record</a>
-            <a className="btn" onClick={() => console.log(shuffled)}>show optionarr</a>
+            {/*<a className="btn" onClick={() => console.log(currRecord)}>show curr question record</a>*/}
+            {/*<a className="btn" onClick={() => console.log(shuffled)}>show optionarr</a>*/}
             <div className="card">
                 <div className="card-header bg-light fw-bolder">
                     <h3>{question.title && question.title}</h3>
@@ -220,10 +220,10 @@ function QuestionContainer({question, quiz}: {
                                         checked={currRecord.selectedOptionNumber ? currRecord.selectedOptionNumber == option.number : false}
                                         onChange={() => handleOptionChange(option.number)}
                                     />&nbsp;
-                                    <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                                    <textarea readOnly={true} className={`col-6 d-flex align-items-center justify-content-start`}>
                                         {question.options.find((o: any) => o.number == option.number) &&
                                             question.options.find((o: any) => o.number == option.number).text || ""}
-                                    </div>
+                                    </textarea>
                                 </label>
                             </div>
                         ))}
@@ -237,9 +237,9 @@ function QuestionContainer({question, quiz}: {
                                         checked={currRecord.selectedOptionNumber ? currRecord.selectedOptionNumber == option.number : false}
                                         onChange={() => handleOptionChange(option.number)}
                                     />&nbsp;
-                                    <div className={`col-6 d-flex align-items-center justify-content-start`}>
+                                    <textarea readOnly={true} className={`col-6 d-flex align-items-center justify-content-start rounded`}>
                                         {question.options.find((o: any) => o.number == option.number).text || ""}
-                                    </div>
+                                    </textarea>
                                 </label>
                             </div>
                         ))}

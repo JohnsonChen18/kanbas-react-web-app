@@ -32,11 +32,11 @@ export default function QuizEditor() {
 
     return (
         <div className="wd-quiz-editor">
-            <button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"
-                    onClick={() => console.log(questions)}>
-                <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>
-                show quiz log
-            </button>
+            {/*<button id="wd-add-quiz-btn" className="float-end btn btn-lg btn-danger mb-2 mb-md-0"*/}
+            {/*        onClick={() => console.log(questions)}>*/}
+            {/*    <FaPlus className="position-relative me-2" style={{bottom: '1px'}}/>*/}
+            {/*    show quiz log*/}
+            {/*</button>*/}
             <div className="wd-quiz-editor-heading row">
                 <div className="wd-quiz-editor-heading-points text-end fw-bold fs-4 col-6">Points {totalPoints}</div>
                 <div className="wd-quiz-editor-heading-publish text-start col-6 d-flex align-items-center">

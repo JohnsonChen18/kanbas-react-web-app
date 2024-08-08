@@ -204,10 +204,10 @@ export default function SingleQuestionEditor() {
                             <label className="col-6 d-flex align-items-center justify-content-start fw-bold"
                                    htmlFor="wd-quiz-possible-answer">
                                 Option:&nbsp;
-                                <div className={`col-6 d-flex align-items-center justify-content-start 
+                                <textarea readOnly={true} className={`col-6 d-flex align-items-center justify-content-start 
                                 ${currQuestion.correctOptionNumber == option.number ? "bg-success" : "bg-secondary"}`}>
                                     {currQuestion.options.find((o: any) => o.number == option.number).text || ""}
-                                </div>
+                                </textarea>
                             </label>
                         </div>))}
                 {currQuestion.questionType == "FILL_IN_BLANK" && currQuestion.correct_answers.map((answer: any, index: number) => (
@@ -363,7 +363,7 @@ export default function SingleQuestionEditor() {
                         </div>
                         <label className="col-6 d-flex align-items-center justify-content-start fw-bold" htmlFor="wd-quiz-possible-answer">
                             Option:&nbsp;
-                            <input id="wd-quiz-possible-answer"
+                            <textarea id="wd-quiz-possible-answer"
                                    className="form-control customized-boarder w-100 align-items-center justify-content-start"
                                    value={currQuestion.options.find((o: any) => o.number == option.number).text || ""}
                                    onChange={(e) => handleOptionChange(e, option.number)}/>
