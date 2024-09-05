@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# Canvas-like Online Learning Platform
+This is the frontend repo. Backend repo is at https://github.com/JohnsonChen18/kanbas-node-server-app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+This is an online learning platform inspired by Canvas, where users can register, log in, and participate in online courses. The project uses React for the frontend and Node.js with Express for the backend, with MongoDB as the database.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- User registration and login
+- Create and manage courses and modules
+- Submit and manage assignments
+- Online quiz system with automatic grading
+- Real-time course discussion board
+- User grade management
+- Admin dashboard
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tech Stack
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Frontend**: React, Redux, Bootstrap
+- **Backend**: Node.js, Express
+- **Database**: MongoDB
 
-### `npm test`
+## Installation and Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+Make sure you have the following installed:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js
+- MongoDB
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Steps
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository:
+    ```bash
+    git clone [https://github.com/your-github-username/canvas-clone-project.git](https://github.com/JohnsonChen18/kanbas-react-web-app)
+    cd canvas-clone-project
+    ```
 
-### `npm run eject`
+2. Install dependencies:
+    ```bash
+    # Frontend dependencies
+    cd frontend
+    npm install
+    
+    # Backend dependencies
+    cd ../backend
+    npm install
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Configure the database:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   Ensure MongoDB is running locally or configure a remote MongoDB instance. Update the `.env` file with your MongoDB connection URI.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4. Run the project:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    - Start the frontend:
+      ```bash
+      npm start
+      ```
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. Open your browser and go to `http://localhost:3000`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Contact.
+
+If you have any problem using this project, contact me at js.chen.swe@gmail.com
+
